@@ -79,6 +79,8 @@ struct ChatSocket : sf::UdpSocket, rn::LogicalObject
         } while (status != Done && status != Partial);
 
         std::string c_str_message = static_cast<const char *>(packet.getData());
+        packet.clear();
+
         std::cout << c_str_message << "\n";
     }
 protected:
