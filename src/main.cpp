@@ -1,15 +1,20 @@
 #include <RuneEngine/Engine.hpp>
 
-struct ChatSocket : sf::UdpSocket
+struct ChatSocket : sf::UdpSocket, rn::LogicalObject
 {
     using sf::UdpSocket::UdpSocket;
     ChatSocket()
     {
-        std::cout << "IPv4: " << ip_address << "\n";
         setBlocking(true);
     }
     virtual ~ChatSocket() = 0;
-    virtual void update() = 0;
+    void type_remote_ip_address()
+    {
+        std::string str_ip;
+        std::cout << "type remote ip address: ";
+        std::cin >> str_ip;
+        remote_ip_address = str_ip;
+    }
     void type_port()
     {
         unsigned short port;
@@ -20,7 +25,7 @@ struct ChatSocket : sf::UdpSocket
     void assign_port(unsigned short port)
     {
         this->port = new unsigned short(port);
-        std::cout << "local port assigned as: " << port << "\n";
+        std::cout << "my address is: " << ip_address << ":" << port << "\n";
     }
     bool portIsOpen()
     {
@@ -34,6 +39,10 @@ struct ChatSocket : sf::UdpSocket
     {
         return ip_address;
     }
+    sf::IpAddress getRemoteIPv4() const
+    {
+        return remote_ip_address;
+    }
     void type_and_send_message()
     {
         if (!port)
@@ -46,7 +55,7 @@ struct ChatSocket : sf::UdpSocket
         std::cin >> str;
         packet.clear();
         packet.append(str.c_str(), str.size() * sizeof(char));
-        Status send_code = send(packet, ip_address, *port);
+        Status send_code = send(packet, remote_ip_address, *port);
 
         if (send_code != Done)
         {
@@ -66,7 +75,7 @@ struct ChatSocket : sf::UdpSocket
         do
         {
             packet.clear();
-            status = receive(packet, ip_address, *port);
+            status = receive(packet, remote_ip_address, *port);
         } while (status != Done && status != Partial);
 
         std::string message;
@@ -83,7 +92,7 @@ protected:
 private:
     unsigned short *port = nullptr;
     sf::IpAddress ip_address = sf::IpAddress::getLocalAddress();
-
+    sf::IpAddress remote_ip_address = "";
 };
 ChatSocket::~ChatSocket()
 {
@@ -94,10 +103,13 @@ ChatSocket::~ChatSocket()
 struct Client : ChatSocket
 {
     using ChatSocket::ChatSocket;
+    void start() override
+    {
+        type_remote_ip_address();
+    }
     void update() override
     {
         type_port();
-
         wait_for_message();
         type_and_send_message();
     }
@@ -106,10 +118,12 @@ struct Client : ChatSocket
 struct Server : ChatSocket
 {
     using ChatSocket::ChatSocket;
+    void start() override
+    {
+        type_remote_ip_address();
+    }
     void update() override
     {
-        assign_port(getLocalPort());
-
         int connect_code = bind(getPort(), getIPv4());
 
         if (connect_code != Done)
@@ -149,6 +163,7 @@ int main()
 {
     ChatSocket *socket = getSocketType();
     sf::Packet packet;
+    socket->start();
     while (true)
     {
         socket->update();
