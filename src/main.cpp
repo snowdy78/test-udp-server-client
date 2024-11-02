@@ -78,13 +78,8 @@ struct ChatSocket : sf::UdpSocket, rn::LogicalObject
             status = receive(packet, remote_ip_address, *port);
         } while (status != Done && status != Partial);
 
-        std::string message;
-        auto c_str_message = static_cast<const char *>(packet.getData());
-        for (auto ptr = c_str_message; ptr < c_str_message + packet.getDataSize(); ptr++)
-        {
-            message += ptr;
-        }
-        std::cout << message << "\n";
+        std::string c_str_message = static_cast<const char *>(packet.getData());
+        std::cout << c_str_message << "\n";
     }
 protected:
     sf::Packet packet;
