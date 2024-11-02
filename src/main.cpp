@@ -55,7 +55,7 @@ struct ChatSocket : sf::UdpSocket, rn::LogicalObject
         std::cin >> str;
         packet.clear();
         packet.append(str.c_str(), str.size() * sizeof(char));
-        Status send_code = send(packet, ip_address, *port);
+        Status send_code = send(packet, remote_ip_address, *port);
 
         if (send_code != Done)
         {
@@ -110,8 +110,9 @@ struct Client : ChatSocket
     }
     void update() override
     {
-        wait_for_message();
         type_and_send_message();
+
+        wait_for_message();
     }
 };
 
@@ -131,19 +132,19 @@ struct Server : ChatSocket
     }
     void update() override
     {
-
-        type_and_send_message();
         wait_for_message();
+        type_and_send_message();
     }
 };
 
 ChatSocket *getSocketType()
 {
     std::string c;
-    std::cout << "host or connect? (h/c): ";
 
     while (true)
     {
+        std::cout << "host or connect? (h/c): ";
+
         std::cin >> c;
         const std::regex client_socket{"c"};
         const std::regex server_socket{"h"};
