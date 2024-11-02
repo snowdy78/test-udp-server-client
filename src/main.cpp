@@ -105,11 +105,11 @@ struct Client : ChatSocket
     using ChatSocket::ChatSocket;
     void start() override
     {
+        type_port();
         type_remote_ip_address();
     }
     void update() override
     {
-        type_port();
         wait_for_message();
         type_and_send_message();
     }
@@ -120,17 +120,18 @@ struct Server : ChatSocket
     using ChatSocket::ChatSocket;
     void start() override
     {
+        assign_port(25565);
+        int connect_code = bind(getPort(), getIPv4());
+        if (connect_code != Done)
+        {
+            std::cout << "Failed to connect with code: " << connect_code << "\n";
+            throw std::exception();
+        }
         type_remote_ip_address();
     }
     void update() override
     {
-        int connect_code = bind(getPort(), getRemoteIPv4());
 
-        if (connect_code != Done)
-        {
-            std::cout << "Failed to connect with code: " << connect_code << "\n";
-            return;
-        }
         type_and_send_message();
         wait_for_message();
     }
@@ -164,6 +165,7 @@ int main()
     ChatSocket *socket = getSocketType();
     sf::Packet packet;
     socket->start();
+
     while (true)
     {
         socket->update();
