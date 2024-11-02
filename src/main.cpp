@@ -1,0 +1,160 @@
+#include <RuneEngine/Engine.hpp>
+
+struct ChatSocket : sf::UdpSocket
+{
+    using sf::UdpSocket::UdpSocket;
+    ChatSocket()
+    {
+        std::cout << "IPv4: " << ip_address << "\n";
+        setBlocking(true);
+    }
+    virtual ~ChatSocket() = 0;
+    virtual void update() = 0;
+    void type_port()
+    {
+        unsigned short port;
+        std::cout << "type port: ";
+        std::cin >> port;
+        this->port = new unsigned short(port);
+    }
+    void assign_port(unsigned short port)
+    {
+        this->port = new unsigned short(port);
+        std::cout << "local port assigned as: " << port << "\n";
+    }
+    bool portIsOpen()
+    {
+        return port != nullptr;
+    }
+    unsigned short getPort() const
+    {
+        return *port;
+    }
+    sf::IpAddress getIPv4() const
+    {
+        return ip_address;
+    }
+    void type_and_send_message()
+    {
+        if (!port)
+        {
+            std::cout << "port is unknown\n";
+            return;
+        }
+        std::string str;
+        std::cout << "message: ";
+        std::cin >> str;
+        packet.clear();
+        packet.append(str.c_str(), str.size() * sizeof(char));
+        Status send_code = send(packet, ip_address, *port);
+
+        if (send_code != Done)
+        {
+            std::cout << "Failed to send with code" << send_code << "\n";
+        }
+    }
+    void wait_for_message()
+    {
+        if (!port)
+        {
+            std::cout << "port is unknown\n";
+            return;
+        }
+        std::cout << "wait for message\n";
+
+        Status status;
+        do
+        {
+            packet.clear();
+            status = receive(packet, ip_address, *port);
+        } while (status != Done && status != Partial);
+
+        std::string message;
+        auto c_str_message = static_cast<const char *>(packet.getData());
+        for (auto ptr = c_str_message; ptr < c_str_message + packet.getDataSize(); ptr++)
+        {
+            message += ptr;
+        }
+        std::cout << message << "\n";
+    }
+protected:
+    sf::Packet packet;
+
+private:
+    unsigned short *port = nullptr;
+    sf::IpAddress ip_address = sf::IpAddress::getLocalAddress();
+
+};
+ChatSocket::~ChatSocket()
+{
+    delete port;
+}
+
+
+struct Client : ChatSocket
+{
+    using ChatSocket::ChatSocket;
+    void update() override
+    {
+        type_port();
+
+        wait_for_message();
+        type_and_send_message();
+    }
+};
+
+struct Server : ChatSocket
+{
+    using ChatSocket::ChatSocket;
+    void update() override
+    {
+        assign_port(getLocalPort());
+
+        int connect_code = bind(getPort(), getIPv4());
+
+        if (connect_code != Done)
+        {
+            std::cout << "Failed to connect with code: " << connect_code << "\n";
+            return;
+        }
+        type_and_send_message();
+        wait_for_message();
+    }
+};
+
+ChatSocket *getSocketType()
+{
+    std::string c;
+    std::cout << "host or connect? (h/c): ";
+
+    while (true)
+    {
+        std::cin >> c;
+        const std::regex client_socket{"c"};
+        const std::regex server_socket{"h"};
+        if (std::regex_match(c.begin(), c.end(), client_socket))
+        {
+            return new Client;
+        }
+        if (std::regex_match(c.begin(), c.end(), server_socket))
+        {
+            return new Server;
+        }
+        std::cout << "incorrect.\n";
+    }
+    return nullptr;
+}
+
+int main()
+{
+    ChatSocket *socket = getSocketType();
+    sf::Packet packet;
+    while (true)
+    {
+        socket->update();
+    }
+
+    delete socket;
+    std::cin.get();
+    return 0;
+}
