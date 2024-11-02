@@ -55,7 +55,7 @@ struct ChatSocket : sf::UdpSocket, rn::LogicalObject
         std::cin >> str;
         packet.clear();
         packet.append(str.c_str(), str.size() * sizeof(char));
-        Status send_code = send(packet, remote_ip_address, *port);
+        Status send_code = send(packet, ip_address, *port);
 
         if (send_code != Done)
         {
@@ -124,7 +124,7 @@ struct Server : ChatSocket
     }
     void update() override
     {
-        int connect_code = bind(getPort(), getIPv4());
+        int connect_code = bind(getPort(), getRemoteIPv4());
 
         if (connect_code != Done)
         {
