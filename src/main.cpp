@@ -8,12 +8,23 @@ struct ChatSocket : sf::UdpSocket, rn::LogicalObject
         setBlocking(true);
     }
     virtual ~ChatSocket() = 0;
-    void type_remote_ip_address()
+    void type_remote_address()
     {
-        std::string str_ip;
-        std::cout << "type remote ip address: ";
-        std::cin >> str_ip;
-        remote_ip_address = str_ip;
+        std::cout << "type remote address 'ip:port': ";
+        std::string address;
+        std::cin >> address;
+        std::regex ip_port_rgx(R"(([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*|local|l):([0-9]{5}))");
+        std::smatch matches;
+        if (std::regex_search(address, matches, ip_port_rgx))
+        {
+            if (matches.size() == 3)
+            {
+                remote_ip_address = std::regex_match(address, std::regex("l|local"))
+                    ? sf::IpAddress::getLocalAddress()
+                    : sf::IpAddress(matches[1]);
+                remote_port = new unsigned short(std::stoi(matches[2]));
+            }
+        }
     }
     void type_port()
     {
@@ -21,19 +32,24 @@ struct ChatSocket : sf::UdpSocket, rn::LogicalObject
         std::cout << "type port: ";
         std::cin >> port;
         this->port = new unsigned short(port);
+        std::cout << "my address is: " << ip_address << ":" << port << "\n";
     }
     void assign_port(unsigned short port)
     {
         this->port = new unsigned short(port);
         std::cout << "my address is: " << ip_address << ":" << port << "\n";
     }
-    bool portIsOpen()
+    bool portIsOpen() const
     {
         return port != nullptr;
     }
     unsigned short getPort() const
     {
         return *port;
+    }
+    unsigned short getRemotePort() const
+    {
+        return *remote_port;
     }
     sf::IpAddress getIPv4() const
     {
@@ -52,15 +68,16 @@ struct ChatSocket : sf::UdpSocket, rn::LogicalObject
         }
         std::string str;
         std::cout << "message: ";
-        std::cin >> str;
+        std::getline(std::cin, str);
         packet.clear();
         packet.append(str.c_str(), str.size() * sizeof(char));
-        Status send_code = send(packet, remote_ip_address, *port);
+        Status send_code = send(packet, remote_ip_address, *remote_port);
 
         if (send_code != Done)
         {
             std::cout << "Failed to send with code" << send_code << "\n";
         }
+
     }
     void wait_for_message()
     {
@@ -75,18 +92,21 @@ struct ChatSocket : sf::UdpSocket, rn::LogicalObject
         do
         {
             packet.clear();
-            status = receive(packet, remote_ip_address, *port);
+            status = receive(packet, remote_ip_address, *remote_port);
         } while (status != Done && status != Partial);
-
-        std::string c_str_message = static_cast<const char *>(packet.getData());
+        size_t size = packet.getDataSize();
+        char *p = new char[size + 1];
+        std::memcpy(p, packet.getData(), size);
+        *(p + size) = '\0';
+        std::cout << p << "\n";
         packet.clear();
-
-        std::cout << c_str_message << "\n";
+        delete[] p;
     }
 protected:
-    sf::Packet packet;
+    sf::Packet packet{};
 
 private:
+    unsigned short *remote_port = nullptr;
     unsigned short *port = nullptr;
     sf::IpAddress ip_address = sf::IpAddress::getLocalAddress();
     sf::IpAddress remote_ip_address = "";
@@ -94,6 +114,7 @@ private:
 ChatSocket::~ChatSocket()
 {
     delete port;
+    delete remote_port;
 }
 
 
@@ -103,12 +124,11 @@ struct Client : ChatSocket
     void start() override
     {
         type_port();
-        type_remote_ip_address();
+        type_remote_address();
     }
     void update() override
     {
         type_and_send_message();
-
         wait_for_message();
     }
 };
@@ -118,14 +138,14 @@ struct Server : ChatSocket
     using ChatSocket::ChatSocket;
     void start() override
     {
-        assign_port(25565);
+        type_port();
         int connect_code = bind(getPort(), getIPv4());
         if (connect_code != Done)
         {
             std::cout << "Failed to connect with code: " << connect_code << "\n";
             throw std::exception();
         }
-        type_remote_ip_address();
+        type_remote_address();
     }
     void update() override
     {
@@ -143,8 +163,8 @@ ChatSocket *getSocketType()
         std::cout << "host or connect? (h/c): ";
 
         std::cin >> c;
-        const std::regex client_socket{"c"};
-        const std::regex server_socket{"h"};
+        const std::regex client_socket{"c|connect", std::regex_constants::icase};
+        const std::regex server_socket{"h|host", std::regex_constants::icase};
         if (std::regex_match(c.begin(), c.end(), client_socket))
         {
             return new Client;
@@ -162,14 +182,23 @@ int main()
 {
     ChatSocket *socket = getSocketType();
     sf::Packet packet;
-    socket->start();
 
-    while (true)
+    try
     {
-        socket->update();
+        socket->start();
+
+        while (true)
+        {
+            socket->update();
+        }
+    } catch (std::exception &err)
+    {
+        std::cin.get();
+        delete socket;
+        throw err;
     }
 
-    delete socket;
     std::cin.get();
+    delete socket;
     return 0;
 }
