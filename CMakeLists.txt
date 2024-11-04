@@ -18,10 +18,15 @@ file(
     ${MY_PROJECT_SOURCE_DIR}/src/*.cpp
 )
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_FILES})
+file(GLOB_RECURSE
+    PROJECT_INCLUDE_FILES
+    ${MY_PROJECT_SOURCE_DIR}/include/*.hpp
+)
+
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCE_FILES} ${PROJECT_INCLUDE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC RuneEngine)
 
-target_include_directories(${PROJECT_NAME} PUBLIC "${MY_PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}")
+target_include_directories(${PROJECT_NAME} PRIVATE "${MY_PROJECT_SOURCE_DIR}/include")
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
 if(WIN32)
