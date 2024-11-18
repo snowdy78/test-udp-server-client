@@ -20,7 +20,10 @@ public:
 	Ship(Ship &&ship) noexcept;
 	~Ship();
 
+	void setPosition(float x, float y);
+	void setPosition(const rn::Vec2f &vector);
 	void update() override;
+	void onEvent(sf::Event &event) override;
 
 	void setGun(const Gun &gun);
 	/**
@@ -32,4 +35,5 @@ public:
 	void shoot();
 	Ship &operator=(const Ship &ship);
 	Ship &operator=(Ship &&ship) noexcept;
+	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 };

@@ -1,6 +1,4 @@
-#include "RigitBody2d.hpp"
-#include "RuneEngine/EngineDecl.hpp"
-#include "SFML/Graphics/Transformable.hpp"
+#include "game/RigitBody2d.hpp"
 
 rn::Vec2f RigitBody2d::countDirection() const
 {

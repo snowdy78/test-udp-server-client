@@ -1,7 +1,7 @@
 #pragma once
 
-#include "SoundDisperseEntity.hpp"
 #include "Collidable.hpp"
+#include "SoundDisperseEntity.hpp"
 #include "decl.hpp"
 
 class Bullet : public rn::MonoBehaviour, public Collidable
@@ -20,6 +20,7 @@ class Bullet : public rn::MonoBehaviour, public Collidable
 
 public:
 	Bullet();
+	~Bullet() override = 0;
 
 	void setDirection(const rn::Vec2f &direction);
 	void setMass(float mass);
@@ -29,13 +30,16 @@ public:
 	void setPosition(const rn::Vec2f &vector);
 
 	const rn::Vec2f &getDirection() const;
+	const sf::Sprite &getSprite() const;
 	float getMass() const;
 	float getVelocity() const;
 	float getAcceleration() const;
 	rn::Vec2f getSize() const;
 	bool isIntersected(const rn::Vec2f &point) const override;
-	const Collider *getCollider() const;
+	const Collider *getCollider() const override;
+	bool castToChild(const Collidable *collidable) const override;
 	void update() override;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
+	virtual Bullet *copy() const = 0;
 };

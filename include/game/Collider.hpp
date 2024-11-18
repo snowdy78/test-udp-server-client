@@ -1,8 +1,5 @@
 #pragma once
 
-#include "RuneEngine/EngineDecl.hpp"
-#include "RuneEngine/Math/ellipce.hpp"
-#include "RuneEngine/Math/polygon.hpp"
 #include "decl.hpp"
 
 class Collider : public sf::Transformable

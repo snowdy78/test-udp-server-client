@@ -1,6 +1,5 @@
-#include "Ship.hpp"
-#include "Gun.hpp"
-#include "RigitBody2d.hpp"
+#include "game/Ship.hpp"
+#include "game/Gun.hpp"
 
 Ship::Ship() : RigitBody2d(*texture) {}
 void Ship::shoot()
@@ -13,7 +12,8 @@ void Ship::shoot()
 }
 void Ship::setGun(const Gun &gun)
 {
-	delete this->gun;
+	if (this->gun)
+		delete this->gun;
 	this->gun = gun.copy();
 }
 Ship::~Ship()
@@ -52,4 +52,33 @@ void Ship::update()
 	{
 		gun->update();
 	}
+}
+void Ship::onEvent(sf::Event &event)
+{
+	RigitBody2d::onEvent(event);
+	if (gun)
+	{
+		gun->onEvent(event);
+	}
+	if (rn::isKeydown(sf::Mouse::Left))
+	{
+		shoot();
+	}
+}
+void Ship::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+	states.transform *= getTransform();
+	target.draw(sprite, states);
+	if (gun)
+		target.draw(*gun);
+}
+void Ship::setPosition(float x, float y)
+{
+	sf::Transformable::setPosition(x, y);
+	gun->setPosition(x, y);
+}
+void Ship::setPosition(const rn::Vec2f &vector)
+{
+	sf::Transformable::setPosition(vector);
+	gun->setPosition(vector);
 }

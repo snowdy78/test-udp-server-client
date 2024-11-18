@@ -9,17 +9,23 @@ class BulletMother : public sf::Transformable, public rn::LogicalObject
 {
 	class ChildBullet
 	{
-        Bullet *bullet;
+		Bullet *bullet;
 		BulletMother *mother;
 		friend class BulletMother;
 		void remove();
 
 	public:
 		ChildBullet(BulletMother *mother, Bullet *bullet);
+		ChildBullet(const ChildBullet &bullet) : bullet(bullet.bullet), mother(bullet.mother) {
+
+		}
 		~ChildBullet();
+		const sf::Sprite *getSprite() const;
 		void update();
 		void onCollide();
 	};
+
+protected:
 	std::vector<ChildBullet> bullets;
 
 public:

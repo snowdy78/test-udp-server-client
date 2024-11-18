@@ -1,4 +1,4 @@
-#include "Bullet.hpp"
+#include "game/Bullet.hpp"
 
 /**
  * \brief Default constructor for Bullet
@@ -11,16 +11,15 @@ Bullet::Bullet() : sprite(*texture)
 	sound.setBuffer(sound_buffer);
 	setOrigin(rn::Vec2f{ texture->getSize() / 2u });
 	updateCollider();
+	setCollisionType(CollisionType::Different);
+	sound.play();
 }
 void Bullet::update()
 {
 	sound.update();
 	velocity += acceleration;
 	move(direction * velocity);
-	for (auto &collidable: collidables)
-	{
-		collidable->getCollider()->collide(collider);
-	}
+	Collidable::update();
 }
 void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
@@ -91,3 +90,12 @@ const Collider *Bullet::getCollider() const
 {
 	return &collider;
 }
+bool Bullet::castToChild(const Collidable *collidable) const
+{
+	return dynamic_cast<const Bullet *>(collidable);
+}
+const sf::Sprite &Bullet::getSprite() const
+{
+	return sprite;
+}
+Bullet::~Bullet() {}

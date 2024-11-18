@@ -27,13 +27,13 @@ public:
 
 class RigitBody2d : public rn::MonoBehaviour, public sf::Listener
 {
-	sf::Sprite sprite;
 	float velocity = 0.1f;
 	rn::Vec2f countDirection() const;
 	void rotation();
 
 	void movement();
-
+protected:
+	sf::Sprite sprite;
 public:
 	using Transformable::getPosition;
 	explicit RigitBody2d(const sf::Texture &texture);

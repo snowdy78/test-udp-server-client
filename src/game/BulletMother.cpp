@@ -1,5 +1,5 @@
-#include "BulletMother.hpp"
-#include "Bullet.hpp"
+#include "game/BulletMother.hpp"
+#include "game/Bullet.hpp"
 
 BulletMother::BulletMother() {}
 
@@ -27,7 +27,10 @@ void BulletMother::ChildBullet::update()
 	{
 		remove();
 	}
-	bullet->update();
+	else
+	{
+		bullet->update();
+	}
 }
 void BulletMother::ChildBullet::onCollide()
 {
@@ -35,7 +38,7 @@ void BulletMother::ChildBullet::onCollide()
 }
 void BulletMother::summon(Bullet *bullet, const rn::Vec2f &direction)
 {
-    bullet->setDirection(direction);
+	bullet->setDirection(direction);
 	bullets.emplace_back(this, bullet);
 }
 void BulletMother::update()
@@ -44,4 +47,10 @@ void BulletMother::update()
 	{
 		bullet.update();
 	}
+}
+const sf::Sprite *BulletMother::ChildBullet::getSprite() const
+{
+	if (bullet)
+		return &bullet->getSprite();
+	return nullptr;
 }

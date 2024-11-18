@@ -6,4 +6,5 @@ class BaseBullet : public Bullet
 {
 public:
     BaseBullet();
+	Bullet *copy() const override;
 };
