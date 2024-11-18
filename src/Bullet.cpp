@@ -10,17 +10,17 @@ Bullet::Bullet() : sprite(*texture)
 	sound_buffer.loadFromFile("shoot.ogg");
 	sound.setBuffer(sound_buffer);
 	setOrigin(rn::Vec2f{ texture->getSize() / 2u });
-    updateCollider();
+	updateCollider();
 }
 void Bullet::update()
 {
 	sound.update();
 	velocity += acceleration;
 	move(direction * velocity);
-    for (auto &collidable : collidables)
-    {
-        collidable->getCollider()->collide(collider);
-    }
+	for (auto &collidable: collidables)
+	{
+		collidable->getCollider()->collide(collider);
+	}
 }
 void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
@@ -76,7 +76,7 @@ bool Bullet::isIntersected(const rn::Vec2f &point) const
 void Bullet::setPosition(float x, float y)
 {
 	sf::Transformable::setPosition(x, y);
-    updateCollider();
+	updateCollider();
 }
 void Bullet::setPosition(const rn::Vec2f &vector)
 {
@@ -86,4 +86,8 @@ void Bullet::setPosition(const rn::Vec2f &vector)
 void Bullet::updateCollider()
 {
 	collider.transform(rn::math::ellipce(rn::Circle(getSize().x / 2.f)));
+}
+const Collider *Bullet::getCollider() const
+{
+	return &collider;
 }

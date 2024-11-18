@@ -34,6 +34,7 @@ public:
 	float getAcceleration() const;
 	rn::Vec2f getSize() const;
 	bool isIntersected(const rn::Vec2f &point) const override;
+	const Collider *getCollider() const;
 	void update() override;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 

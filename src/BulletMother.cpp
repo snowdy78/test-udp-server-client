@@ -1,15 +1,8 @@
 #include "BulletMother.hpp"
+#include "Bullet.hpp"
 
-BulletMother::BulletMother()
-{}
+BulletMother::BulletMother() {}
 
-void BulletMother::update()
-{
-    for (auto &bullet : bullets)
-    {
-        bullet.update();
-    }
-}
 void BulletMother::ChildBullet::remove()
 {
 	for (auto iter = mother->bullets.begin(); iter != mother->bullets.end(); ++iter)
@@ -21,26 +14,34 @@ void BulletMother::ChildBullet::remove()
 		}
 	}
 }
-BulletMother::ChildBullet::ChildBullet(BulletMother *mother) : mother(mother)
-{
-}
+BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet) : mother(mother), bullet(bullet) {}
+
 BulletMother::ChildBullet::~ChildBullet()
 {
+	delete bullet;
 }
 void BulletMother::ChildBullet::update()
 {
-    if (rn::math::length(mother->getPosition() - bullet->getPosition())
-        > static_cast<float>(2 * rn::VideoSettings::getResolution().x))
-    {
-        remove();
-    }
-    bullet->update();
+	if (rn::math::length(mother->getPosition() - bullet->getPosition())
+		> static_cast<float>(2 * rn::VideoSettings::getResolution().x))
+	{
+		remove();
+	}
+	bullet->update();
 }
 void BulletMother::ChildBullet::onCollide()
 {
 	remove();
 }
-void BulletMother::summon(rn::Vec2f direction)
+void BulletMother::summon(Bullet *bullet, const rn::Vec2f &direction)
 {
-    bullets.emplace_back(this);
+    bullet->setDirection(direction);
+	bullets.emplace_back(this, bullet);
+}
+void BulletMother::update()
+{
+	for (auto &bullet: bullets)
+	{
+		bullet.update();
+	}
 }

@@ -3,5 +3,5 @@
 
 Gun::~Gun()
 {}
-Gun::Gun(Ship *ship) : ship(ship)
+Gun::Gun(const Ship *ship) : ship(ship)
 {}

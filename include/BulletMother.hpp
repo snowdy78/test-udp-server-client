@@ -15,7 +15,7 @@ class BulletMother : public sf::Transformable, public rn::LogicalObject
 		void remove();
 
 	public:
-		ChildBullet(BulletMother *mother);
+		ChildBullet(BulletMother *mother, Bullet *bullet);
 		~ChildBullet();
 		void update();
 		void onCollide();
@@ -25,6 +25,6 @@ class BulletMother : public sf::Transformable, public rn::LogicalObject
 public:
 	BulletMother();
 
-	void summon(rn::Vec2f direction);
+	void summon(Bullet *bullet, const rn::Vec2f &direction);
 	void update() override;
 };
