@@ -20,6 +20,8 @@ public:
 	Ship(Ship &&ship) noexcept;
 	~Ship();
 
+	void update() override;
+
 	void setGun(const Gun &gun);
 	/**
 	 * \brief Shoot a bullet in the ship direction.

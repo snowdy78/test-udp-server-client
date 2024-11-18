@@ -1,4 +1,5 @@
 #include "AudioMenu.hpp"
+#include "guns/Pistol.hpp"
 
 AudioMenu::PlayButton::PlayButton(sf::Sound *sound) : Button(getSize(), "Play", Font::Default), sound(sound)
 {}
@@ -54,6 +55,7 @@ void AudioMenu::start()
 	sound.setRelativeToListener(true);
 	player.setPosition(500, 500);
 	player.start();
+	player.setGun(Pistol(&player));
 }
 
 void AudioMenu::update()

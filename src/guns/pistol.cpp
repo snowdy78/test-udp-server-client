@@ -1,5 +1,4 @@
 #include "guns/Pistol.hpp"
-#include "bullets/BaseBullet.hpp"
 
 Pistol::Pistol(const Ship *ship) : Gun(ship) {}
 void Pistol::shoot(const rn::Vec2f &direction)
