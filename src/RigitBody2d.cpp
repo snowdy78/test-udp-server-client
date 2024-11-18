@@ -1,4 +1,6 @@
 #include "RigitBody2d.hpp"
+#include "RuneEngine/EngineDecl.hpp"
+#include "SFML/Graphics/Transformable.hpp"
 
 rn::Vec2f RigitBody2d::countDirection() const
 {
@@ -53,13 +55,15 @@ void RigitBody2d::movement()
 	delete d_move;
 }
 
-RigitBody2d::RigitBody2d(const rn::Vec2f &size)
-	:
-	rect(size) {}
+RigitBody2d::RigitBody2d(const sf::Texture & texture) {
+	sprite.setTexture(texture);
+	rn::Vec2f texture_size{texture.getSize()};
+	sf::Transformable::setOrigin(texture_size / 2.f);
+}
 
 void RigitBody2d::setPosition(const rn::Vec2f &p)
 {
-	Transformable::setPosition(p);
+	sf::Transformable::setPosition(p);
 	Listener::setPosition(p.x, p.y, 0);
 	rn::Vec2f perp = rn::math::nor(getPosition());
 	Listener::setUpVector(perp.x, perp.y, 0.f);
@@ -99,14 +103,14 @@ rn::Vec2f RigitBody2d::getDirection2d()
 	return {getDirection().x, getDirection().y};
 }
 
-const sf::Shape &RigitBody2d::getShape() const
+const sf::Sprite &RigitBody2d::getSprite() const
 {
-	return rect;
+	return sprite;
 }
 
 void RigitBody2d::start()
 {
-	setOrigin(rect.getSize() / 2.f);
+	setOrigin(rn::Vec2f(sprite.getTexture()->getSize() / 2u));
 }
 
 void RigitBody2d::update()
@@ -117,8 +121,15 @@ void RigitBody2d::update()
 	rotation();
 }
 
+void RigitBody2d::onEvent(sf::Event &event)
+{
+	if (rn::isKeydown(sf::Mouse::Left)) {
+		
+	}
+}
+
 void RigitBody2d::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
-	target.draw(rect, states);
+	target.draw(sprite, states);
 }

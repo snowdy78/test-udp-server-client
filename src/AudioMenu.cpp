@@ -14,14 +14,21 @@ void AudioMenu::PlayButton::onClick() {
 	{
 		if (sound->getBuffer())
 		{
-			if (sound->getStatus() == sf::Sound::Stopped || sound->getStatus() == sf::Sound::Paused)
+			if ((sound->getStatus() == sf::Sound::Stopped || sound->getStatus() == sf::Sound::Paused) && !endPlaying())
 			{
 				sound->play();
 				content.setString("Stop");
 			}
-			else if (sound->getStatus() == sf::Sound::Playing)
+			else if (sound->getStatus() == sf::Sound::Playing || endPlaying())
 			{
-				sound->pause();
+				if (endPlaying()) 
+				{
+					sound->stop();
+				}
+				else
+				{ 
+					sound->pause();
+				}
 				content.setString("Play");
 			}
 		}
@@ -52,7 +59,8 @@ void AudioMenu::update()
 {
 	window.clear();
 	player.update();
-	sf::Listener::setGlobalVolume(sound.relativeVolume(player.getPosition()));
+
+	sound.update();
 	window.draw(player);
 	window.draw(play_button);
 	window.display();

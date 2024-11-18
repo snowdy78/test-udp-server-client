@@ -25,7 +25,7 @@ public:
 
 class RigitBody2d : public rn::MonoBehaviour, public sf::Listener
 {
-	rn::Rect rect;
+	sf::Sprite sprite;
 	float velocity = 0.1f;
 	rn::Vec2f countDirection() const;
 	void rotation();
@@ -34,7 +34,7 @@ class RigitBody2d : public rn::MonoBehaviour, public sf::Listener
 
 public:
 	using Transformable::getPosition;
-	explicit RigitBody2d(const rn::Vec2f &size);
+	explicit RigitBody2d(const sf::Texture &texture);
 
 	void setPosition(const rn::Vec2f &p);
 
@@ -45,11 +45,11 @@ public:
 	void move(const rn::Vec2f &p);
 	static rn::Vec2f getDirection2d();
 
-	const sf::Shape &getShape() const;
+	const sf::Sprite &getSprite() const;
 
 	void start() override;
 
 	void update() override;
-
+	void onEvent(sf::Event &event) override;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 };

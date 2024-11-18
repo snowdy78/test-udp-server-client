@@ -1,6 +1,6 @@
 #pragma once
 #include "decl.hpp"
-#include "RigitBody2d.hpp"
+#include "Ship.hpp"
 #include "SoundDisperseEntity.hpp"
 // audio distance playing
 
@@ -18,11 +18,14 @@ class AudioMenu : public rn::MenuBranch
 		static rn::Vec2f getSize();
 
 		virtual void onClick();
-
+		bool endPlaying() 
+		{
+			return sound && sound->getPlayingOffset() == sound->getBuffer()->getDuration();
+		}
 		void onEvent(sf::Event &event);
 	};
 	PlayButton play_button{&sound};
-	RigitBody2d player{{100, 100}};
+	Ship player{};
 public:
 	explicit AudioMenu(sf::RenderWindow &window);
 

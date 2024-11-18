@@ -29,3 +29,19 @@ float SoundDisperseEntity::relativeVolume(const rn::Vec2f &point) const
 		return 100;
 	return (1.0f - std::clamp((clear_dist + dist) / disperse_force, 0.f, 1.f)) * 100.f;
 }
+void SoundDisperseEntity::play() {
+	sf::Sound::play();
+	onPlay();
+}
+void SoundDisperseEntity::stop() {
+	Sound::stop();
+	onStop();
+}
+void SoundDisperseEntity::pause() {
+	Sound::pause();
+	onPause();
+}
+void SoundDisperseEntity::update() {
+	setVolume(relativeVolume(
+		{sf::Listener::getPosition().x, sf::Listener::getPosition().y}));
+}
