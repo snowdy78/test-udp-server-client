@@ -16,7 +16,11 @@ public:
 	* Construct a Ship object with the image set to the contents of Ship::texture
 	*/
 	Ship();
+	Ship(const Ship &ship);
+	Ship(Ship &&ship) noexcept;
+	~Ship();
 
+	void setGun(const Gun &gun);
 	/**
 	 * \brief Shoot a bullet in the ship direction.
 	 *
@@ -24,4 +28,6 @@ public:
 	 * is determined by the ship's rotation.
 	 */
 	void shoot();
+	Ship &operator=(const Ship &ship);
+	Ship &operator=(Ship &&ship) noexcept;
 };
