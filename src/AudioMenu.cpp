@@ -1,15 +1,16 @@
 #include "AudioMenu.hpp"
 
-AudioMenu::PlayButton::PlayButton(sf::Sound *sound): Button(getSize(), "Play", Font::Default), sound(sound) {
+AudioMenu::PlayButton::PlayButton(sf::Sound *sound) : Button(getSize(), "Play", Font::Default), sound(sound)
+{}
 
+rn::Vec2f AudioMenu::PlayButton::getSize()
+{
+	rn::Vec2f res{ rn::VideoSettings::getResolution() };
+	return { res.x / 14.f, res.y / 20.f };
 }
 
-rn::Vec2f AudioMenu::PlayButton::getSize() {
-	rn::Vec2f res{rn::VideoSettings::getResolution()};
-	return {res.x/14.f, res.y/20.f};
-}
-
-void AudioMenu::PlayButton::onClick() {
+void AudioMenu::PlayButton::onClick()
+{
 	if (sound)
 	{
 		if (sound->getBuffer())
@@ -21,12 +22,12 @@ void AudioMenu::PlayButton::onClick() {
 			}
 			else if (sound->getStatus() == sf::Sound::Playing || endPlaying())
 			{
-				if (endPlaying()) 
+				if (endPlaying())
 				{
 					sound->stop();
 				}
 				else
-				{ 
+				{
 					sound->pause();
 				}
 				content.setString("Play");
@@ -35,16 +36,16 @@ void AudioMenu::PlayButton::onClick() {
 	}
 }
 
-void AudioMenu::PlayButton::onEvent(sf::Event &event) {
+void AudioMenu::PlayButton::onEvent(sf::Event &event)
+{
 	if (isClicked(sf::Mouse::Left))
 	{
 		onClick();
 	}
 }
 
-AudioMenu::AudioMenu(sf::RenderWindow &window): MenuBranch(window) {
-
-}
+AudioMenu::AudioMenu(sf::RenderWindow &window) : MenuBranch(window)
+{}
 
 void AudioMenu::start()
 {

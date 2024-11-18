@@ -1,7 +1,8 @@
 #include "ChatSocket.hpp"
 #include "Client.hpp"
 #include "Server.hpp"
-ChatSocket::ChatSocket() {
+ChatSocket::ChatSocket()
+{
 	setBlocking(true);
 }
 
@@ -11,7 +12,8 @@ ChatSocket::~ChatSocket()
 	delete remote_port;
 }
 
-void ChatSocket::type_remote_address() {
+void ChatSocket::type_remote_address()
+{
 	std::cout << "type remote address 'ip:port': ";
 	std::string address;
 	std::cin >> address;
@@ -21,15 +23,15 @@ void ChatSocket::type_remote_address() {
 	{
 		if (matches.size() == 3)
 		{
-			remote_ip_address = std::regex_match(address, std::regex("l|local"))
-				? sf::IpAddress::getLocalAddress()
-				: sf::IpAddress(matches[1]);
-			remote_port = new unsigned short(std::stoi(matches[2]));
+			remote_ip_address = std::regex_match(address, std::regex("l|local")) ? sf::IpAddress::getLocalAddress()
+																				 : sf::IpAddress(matches[1]);
+			remote_port		  = new unsigned short(std::stoi(matches[2]));
 		}
 	}
 }
 
-void ChatSocket::type_port() {
+void ChatSocket::type_port()
+{
 	unsigned short port;
 	std::cout << "type port: ";
 	std::cin >> port;
@@ -37,32 +39,39 @@ void ChatSocket::type_port() {
 	std::cout << "my address is: " << ip_address << ":" << port << "\n";
 }
 
-void ChatSocket::assign_port(unsigned short port) {
+void ChatSocket::assign_port(unsigned short port)
+{
 	this->port = new unsigned short(port);
 	std::cout << "my address is: " << ip_address << ":" << port << "\n";
 }
 
-bool ChatSocket::portIsOpen() const {
+bool ChatSocket::portIsOpen() const
+{
 	return port != nullptr;
 }
 
-unsigned short ChatSocket::getPort() const {
+unsigned short ChatSocket::getPort() const
+{
 	return *port;
 }
 
-unsigned short ChatSocket::getRemotePort() const {
+unsigned short ChatSocket::getRemotePort() const
+{
 	return *remote_port;
 }
 
-sf::IpAddress ChatSocket::getIPv4() const {
+sf::IpAddress ChatSocket::getIPv4() const
+{
 	return ip_address;
 }
 
-sf::IpAddress ChatSocket::getRemoteIPv4() const {
+sf::IpAddress ChatSocket::getRemoteIPv4() const
+{
 	return remote_ip_address;
 }
 
-void ChatSocket::type_and_send_message() {
+void ChatSocket::type_and_send_message()
+{
 	if (!port)
 	{
 		std::cout << "port is unknown\n";
@@ -79,10 +88,10 @@ void ChatSocket::type_and_send_message() {
 	{
 		std::cout << "Failed to send with code" << send_code << "\n";
 	}
-
 }
 
-void ChatSocket::wait_for_message() {
+void ChatSocket::wait_for_message()
+{
 	if (!port)
 	{
 		std::cout << "port is unknown\n";
@@ -95,9 +104,10 @@ void ChatSocket::wait_for_message() {
 	{
 		packet.clear();
 		status = receive(packet, remote_ip_address, *remote_port);
-	} while (status != Done && status != Partial);
+	}
+	while (status != Done && status != Partial);
 	size_t size = packet.getDataSize();
-	char *p     = new char[size + 1];
+	char *p		= new char[size + 1];
 	std::memcpy(p, packet.getData(), size);
 	*(p + size) = '\0';
 	std::cout << p << "\n";
@@ -115,8 +125,8 @@ ChatSocket *getSocketType()
 		std::cout << "host or connect? (h/c): ";
 
 		std::cin >> c;
-		const std::regex client_socket{"c|connect", std::regex_constants::icase};
-		const std::regex server_socket{"h|host", std::regex_constants::icase};
+		const std::regex client_socket{ "c|connect", std::regex_constants::icase };
+		const std::regex server_socket{ "h|host", std::regex_constants::icase };
 		if (std::regex_match(c.begin(), c.end(), client_socket))
 		{
 			return new Client;
@@ -143,7 +153,8 @@ void startChatting()
 		{
 			socket->update();
 		}
-	} catch (std::exception &err)
+	}
+	catch (std::exception &err)
 	{
 		std::cin.get();
 		delete socket;
@@ -153,4 +164,3 @@ void startChatting()
 	std::cin.get();
 	delete socket;
 }
-

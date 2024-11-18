@@ -5,8 +5,10 @@
 class Direction : public rn::Vec2f
 {
 public:
-	explicit Direction(const rn::Vec2f &distance) : rn::Vec2f(rn::math::norm(distance)) {}
-	explicit Direction(float angle) : rn::Vec2f{std::cos(angle), std::sin(angle)} {}
+	explicit Direction(const rn::Vec2f &distance) : rn::Vec2f(rn::math::norm(distance))
+	{}
+	explicit Direction(float angle) : rn::Vec2f{ std::cos(angle), std::sin(angle) }
+	{}
 	const rn::Vec2f &toVector() const
 	{
 		return *this;
@@ -16,8 +18,8 @@ public:
 		if (&distance != this)
 		{
 			rn::Vec2f &&direction = rn::math::norm(distance);
-			x = direction.x;
-			y = direction.y;
+			x					  = direction.x;
+			y					  = direction.y;
 		}
 		return *this;
 	}

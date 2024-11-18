@@ -2,13 +2,17 @@
 
 #include "AudioMenu.hpp"
 #include "ChatSocket.hpp"
-#include "Server.hpp"
 #include "Client.hpp"
+#include "Server.hpp"
+
 
 int main()
 {
-    sf::RenderWindow window{{1920, 1080}, "window"};
+	sf::RenderWindow window{
+		{ 1920, 1080 },
+		"window"
+	};
 
-    rn::MenuBranch::start_branch<AudioMenu>(window);
-    return 0;
+	rn::MenuBranch::start_branch<AudioMenu>(window);
+	return 0;
 }

@@ -11,7 +11,7 @@ rn::Vec2f RigitBody2d::countDirection() const
 void RigitBody2d::rotation()
 {
 	using namespace rn::math;
-	rn::Vec2f dir_2d{getDirection().x, getDirection().y};
+	rn::Vec2f dir_2d{ getDirection().x, getDirection().y };
 	const auto angle = rot(dir_2d);
 	setRotation(angle);
 }
@@ -55,9 +55,10 @@ void RigitBody2d::movement()
 	delete d_move;
 }
 
-RigitBody2d::RigitBody2d(const sf::Texture & texture) {
+RigitBody2d::RigitBody2d(const sf::Texture &texture)
+{
 	sprite.setTexture(texture);
-	rn::Vec2f texture_size{texture.getSize()};
+	rn::Vec2f texture_size{ texture.getSize() };
 	sf::Transformable::setOrigin(texture_size / 2.f);
 }
 
@@ -100,7 +101,7 @@ void RigitBody2d::move(const rn::Vec2f &p)
 
 rn::Vec2f RigitBody2d::getDirection2d()
 {
-	return {getDirection().x, getDirection().y};
+	return { getDirection().x, getDirection().y };
 }
 
 const sf::Sprite &RigitBody2d::getSprite() const
@@ -115,16 +116,16 @@ void RigitBody2d::start()
 
 void RigitBody2d::update()
 {
-	Direction dir{countDirection()};
-	setDirection({dir.x, dir.y, 0});
+	Direction dir{ countDirection() };
+	setDirection({ dir.x, dir.y, 0 });
 	movement();
 	rotation();
 }
 
 void RigitBody2d::onEvent(sf::Event &event)
 {
-	if (rn::isKeydown(sf::Mouse::Left)) {
-		
+	if (rn::isKeydown(sf::Mouse::Left))
+	{
 	}
 }
 

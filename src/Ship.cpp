@@ -6,8 +6,5 @@
  *
  * Construct a Ship object with the image set to the contents of Ship::texture
  */
-Ship::Ship() 
-    : RigitBody2d(*texture) 
-{
-
-}
+Ship::Ship() : RigitBody2d(*texture)
+{}
