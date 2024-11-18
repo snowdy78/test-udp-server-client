@@ -4,11 +4,12 @@
 #include <SFML/System.hpp>
 #include <SFML/Audio/InputSoundFile.hpp>
 
-namespace fonts
+class Font
 {
-	inline sf::Font roboto = rn::sys::loadFont("Roboto-Regular.ttf");
+public:
+	inline static sf::Font Default = rn::sys::loadFont("C:\\Windows\\Fonts\\arial.ttf");
 
-}
+};
 struct ChatSocket;
 struct Client;
 struct Server;

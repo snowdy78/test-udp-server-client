@@ -1,4 +1,4 @@
-#include "ChatSocket.hpp";
+#include "ChatSocket.hpp"
 #include "Client.hpp"
 #include "Server.hpp"
 ChatSocket::ChatSocket() {

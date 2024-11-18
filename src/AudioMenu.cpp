@@ -1,6 +1,6 @@
 #include "AudioMenu.hpp"
 
-AudioMenu::PlayButton::PlayButton(sf::Sound *sound): Button(getSize(), "Play", fonts::roboto), sound(sound) {
+AudioMenu::PlayButton::PlayButton(sf::Sound *sound): Button(getSize(), "Play", Font::Default), sound(sound) {
 
 }
 

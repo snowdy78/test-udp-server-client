@@ -1,4 +1,2 @@
-/cmake-build-release
-/cmake-build-release-visual-studio
-/build
+*build*
 /out
