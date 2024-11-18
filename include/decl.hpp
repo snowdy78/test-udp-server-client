@@ -13,3 +13,15 @@ public:
 struct ChatSocket;
 struct Client;
 struct Server;
+
+class AbstractSpaceField;
+
+class RigitBody2d;
+class Bullet;
+class Ship;
+class BulletMother;
+class Gun;
+class Collidable;
+class Collider;
+class PolygonCollider;
+class EllipseCollider;

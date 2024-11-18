@@ -5,29 +5,26 @@
 #include "decl.hpp"
 
 
-class BulletMother
+class BulletMother : public sf::Transformable, public rn::LogicalObject
 {
 	class ChildBullet
 	{
-		Bullet *bullet;
-		const BulletMother *mother;
+        Bullet *bullet;
+		BulletMother *mother;
 		friend class BulletMother;
+		void remove();
 
 	public:
-		ChildBullet()
-		{
-			bullet = new Bullet();
-		}
-		void update()
-		{}
-		void onCollide()
-		{
-			delete bullet;
-			bullet = nullptr;
-		}
+		ChildBullet(BulletMother *mother);
+		~ChildBullet();
+		void update();
+		void onCollide();
 	};
+	std::vector<ChildBullet> bullets;
 
 public:
-	sf::Transform transform;
 	BulletMother();
+
+	void summon(rn::Vec2f direction);
+	void update() override;
 };
