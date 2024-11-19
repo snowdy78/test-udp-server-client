@@ -22,6 +22,7 @@ void Bullet::update()
 	sound.update();
 	velocity += acceleration;
 	move(direction * velocity);
+	Collidable::updateCollisionState();
 }
 void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {

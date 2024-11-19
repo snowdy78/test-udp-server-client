@@ -17,7 +17,7 @@ public:
 	Collidable();
 	virtual ~Collidable()						= 0;
 	virtual const Collider *getCollider() const = 0;
-	static void updateCollisionState();
+	void updateCollisionState();
 	void setCollisionType(CollisionType collision_type);
 	CollisionType getCollisionType() const;
 	virtual void onCollisionEnter() {}
