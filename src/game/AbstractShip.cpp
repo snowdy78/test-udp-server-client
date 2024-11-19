@@ -1,4 +1,5 @@
 #include "game/AbstractShip.hpp"
+#include "game/RigitBody2d.hpp"
 
 AbstractShip::AbstractShip(const sf::Texture &texture) : sprite(texture) {}
 rn::Vec2f AbstractShip::getSize() const
@@ -12,6 +13,7 @@ const Gun *AbstractShip::getGun() const
 void AbstractShip::setGun(const Gun &gun)
 {
 	this->gun.reset(gun.copy());
+	updateGunPosition();
 }
 void AbstractShip::shoot()
 {
@@ -19,7 +21,7 @@ void AbstractShip::shoot()
 	{
 		return;
 	}
-	gun->shoot(getDirection2d());
+	gun->shoot(getDirection());
 }
 sf::FloatRect AbstractShip::getLocalBounds() const
 {
@@ -32,19 +34,18 @@ sf::FloatRect AbstractShip::getGlobalBounds() const
 
 void AbstractShip::start()
 {
+	RigitBody2d::start();
 	setOrigin(getSize() / 2.f);
 	if (gun)
 		gun->start();
-    onUpdatePosition();
+	onMove();
 }
 
 void AbstractShip::update()
 {
 	RigitBody2d::update();
 	if (gun)
-	{
 		gun->update();
-	}
 }
 
 void AbstractShip::onEvent(sf::Event &event)
@@ -67,8 +68,16 @@ void AbstractShip::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		target.draw(*gun, states);
 	target.draw(sprite, states);
 }
-void AbstractShip::onUpdatePosition()
+void AbstractShip::onMove()
 {
+	updateGunPosition();
+}
+void AbstractShip::onRotation() {}
+const sf::Sprite &AbstractShip::getSprite() const
+{
+	return sprite;
+}
+void AbstractShip::updateGunPosition() {
 	if (gun)
 		gun->setPosition(getPosition());
 }

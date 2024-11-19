@@ -17,7 +17,7 @@ protected:
 public:
 	EnemyShip();
 	~EnemyShip() override = default;
-	void onUpdatePosition() override;
+	void onMove() override;
 	const Collider *getCollider() const override;
 	bool resolve(const Collidable *collidable) const override;
 };

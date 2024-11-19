@@ -18,8 +18,8 @@ void EnemyShip::updateCollider()
 	rn::math::rectangle rect{ getGlobalBounds() };
 	collider.transform(rect);
 }
-void EnemyShip::onUpdatePosition()
+void EnemyShip::onMove()
 {
-	AbstractShip::onUpdatePosition();
+	AbstractShip::onMove();
 	updateCollider();
 }

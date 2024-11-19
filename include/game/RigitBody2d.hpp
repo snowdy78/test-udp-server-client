@@ -5,7 +5,7 @@
 class Direction : public rn::Vec2f
 {
 public:
-	explicit Direction(const rn::Vec2f &distance) : rn::Vec2f(rn::math::norm(distance)) {}
+	explicit Direction(const rn::Vec2f &distance = {}) : rn::Vec2f(rn::math::norm(distance)) {}
 	explicit Direction(float angle) : rn::Vec2f{ std::cos(angle), std::sin(angle) } {}
 	const rn::Vec2f &toVector() const
 	{
@@ -22,9 +22,10 @@ public:
 		return *this;
 	}
 };
-class RigitBody2d : public rn::MonoBehaviour, public sf::Listener
+class RigitBody2d : public rn::MonoBehaviour
 {
 	float velocity = 0.1f;
+	Direction direction{};
 	rn::Vec2f countDirection() const;
 public:
 	using Transformable::getPosition;
@@ -34,12 +35,18 @@ public:
 
 	explicit RigitBody2d();
 
-	virtual void setPosition(const rn::Vec2f &p);
-	virtual void setPosition(float x, float y);
-	virtual void move(float x, float y);
-	virtual void move(const rn::Vec2f &p);
+	void setPosition(const rn::Vec2f &p);
+	void setPosition(float x, float y);
+	void setDirection(float x, float y);
+	void setDirection(const rn::Vec2f &p);
+	Direction getDirection() const;
+	void move(float x, float y);
+	void move(const rn::Vec2f &p);
+	void setRotation(float angle);
+	void rotate(float angle);
 
-	virtual void onUpdatePosition() {}
+	virtual void onMove() {}
+	virtual void onRotation() {}
 	float getVelocity() const;
 	static rn::Vec2f getDirection2d();
 

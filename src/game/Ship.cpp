@@ -1,4 +1,5 @@
 #include "game/Ship.hpp"
+#include "SFML/Audio/Listener.hpp"
 #include "game/AbstractShip.hpp"
 #include "game/Gun.hpp"
 
@@ -7,9 +8,7 @@ Ship::Ship() : AbstractShip(*texture) {}
 void Ship::rotation()
 {
 	using namespace rn::math;
-	rn::Vec2f dir_2d{ getDirection().x, getDirection().y };
-	const auto angle = rot(dir_2d);
-	setRotation(angle);
+	setRotation(rot(getDirection()));
 }
 
 void Ship::movement()
@@ -18,31 +17,31 @@ void Ship::movement()
 	std::unique_ptr<Direction> d_move = nullptr;
 	if (rn::isKeyhold(sf::Keyboard::W))
 	{
-		d_move = std::make_unique<Direction>(getDirection2d());
+		d_move = std::make_unique<Direction>(getDirection());
 	}
 	if (rn::isKeyhold(sf::Keyboard::S))
 	{
 		if (!d_move)
 		{
-			d_move = std::make_unique<Direction>(-getDirection2d());
+			d_move = std::make_unique<Direction>(-getDirection());
 		}
-		*d_move -= getDirection2d();
+		*d_move -= getDirection();
 	}
 	if (rn::isKeyhold(sf::Keyboard::A))
 	{
 		if (!d_move)
 		{
-			d_move = std::make_unique<Direction>(nor(getDirection2d()));
+			d_move = std::make_unique<Direction>(nor(getDirection()));
 		}
-		*d_move += nor(getDirection2d());
+		*d_move += nor(getDirection());
 	}
 	if (rn::isKeyhold(sf::Keyboard::D))
 	{
 		if (!d_move)
 		{
-			d_move = std::make_unique<Direction>(-nor(getDirection2d()));
+			d_move = std::make_unique<Direction>(-nor(getDirection()));
 		}
-		*d_move -= nor(getDirection2d());
+		*d_move -= nor(getDirection());
 	}
 	if (d_move)
 	{
@@ -63,8 +62,22 @@ void Ship::updateCollider()
 	rn::math::rectangle rect{ getGlobalBounds() };
 	collider.transform(rect);
 }
-void Ship::onUpdatePosition()
+void Ship::onMove()
 {
-	AbstractShip::onUpdatePosition();
+	sf::Listener::setPosition(getPosition().x, getPosition().y, 0);
+	rn::Vec2f perp = rn::math::nor(getPosition());
+	sf::Listener::setUpVector(perp.x, perp.y, 0.f);
+	AbstractShip::onMove();
 	updateCollider();
+}
+void Ship::onRotation()
+{
+	sf::Listener::setDirection({getDirection().x, getDirection().y, 0.f});
+	AbstractShip::onRotation();
+	updateCollider();
+}
+void Ship::update()
+{
+	AbstractShip::update();
+	updateCollisionState();
 }

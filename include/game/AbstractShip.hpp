@@ -1,14 +1,17 @@
 #pragma once
 
+#include "RigitBody2d.hpp"
+#include "SFML/Graphics/Sprite.hpp"
 #include "decl.hpp"
 #include "game/Gun.hpp"
-#include "RigitBody2d.hpp"
+
 
 class AbstractShip : public RigitBody2d
 {
 protected:
 	std::unique_ptr<Gun> gun = nullptr;
 	sf::Sprite sprite;
+	void updateGunPosition();
 
 public:
 	AbstractShip(const sf::Texture &texture);
@@ -22,11 +25,13 @@ public:
 	 * is determined by the ship's rotation.
 	 */
 	void shoot();
-	sf::FloatRect getLocalBounds() const;
-	sf::FloatRect getGlobalBounds() const;
 	void start() override;
 	void update() override;
 	void onEvent(sf::Event &event) override;
+	void onMove() override;
+	void onRotation() override;
+	sf::FloatRect getLocalBounds() const;
+	sf::FloatRect getGlobalBounds() const;
+	const sf::Sprite &getSprite() const;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
-	void onUpdatePosition() override;
 };

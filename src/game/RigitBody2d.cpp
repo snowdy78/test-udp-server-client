@@ -10,48 +10,31 @@ RigitBody2d::RigitBody2d() {}
 void RigitBody2d::setPosition(const rn::Vec2f &p)
 {
 	sf::Transformable::setPosition(p);
-	Listener::setPosition(p.x, p.y, 0);
-	rn::Vec2f perp = rn::math::nor(getPosition());
-	Listener::setUpVector(perp.x, perp.y, 0.f);
-	onUpdatePosition();
+	onMove();
 }
 
 void RigitBody2d::setPosition(float x, float y)
 {
-	Transformable::setPosition(x, y);
-	Listener::setPosition(x, y, 0);
-	rn::Vec2f perp = rn::math::nor(getPosition());
-	Listener::setUpVector(perp.x, perp.y, 0.f);
-	onUpdatePosition();
+	sf::Transformable::setPosition(x, y);
+	onMove();
 }
 
 void RigitBody2d::move(float x, float y)
 {
-	Transformable::move(x, y);
-	Listener::setPosition(getPosition().x + x, getPosition().y + y, 0);
-	rn::Vec2f perp = rn::math::nor(getPosition());
-	Listener::setUpVector(perp.x, perp.y, 0.f);
-	onUpdatePosition();
+	sf::Transformable::move(x, y);
+	onMove();
 }
 
 void RigitBody2d::move(const rn::Vec2f &p)
 {
-	Transformable::move(p);
-	Listener::setPosition(getPosition().x + p.x, getPosition().y + p.y, 0);
-	rn::Vec2f perp = rn::math::nor(getPosition());
-	Listener::setUpVector(perp.x, perp.y, 0.f);
-	onUpdatePosition();
-}
-
-rn::Vec2f RigitBody2d::getDirection2d()
-{
-	return { getDirection().x, getDirection().y };
+	sf::Transformable::move(p);
+	onMove();
 }
 
 void RigitBody2d::update()
 {
 	Direction dir{ countDirection() };
-	setDirection({ dir.x, dir.y, 0 });
+	setDirection(dir.x, dir.y);
 	movement();
 	rotation();
 }
@@ -64,3 +47,27 @@ float RigitBody2d::getVelocity() const
 	return velocity;
 }
 void RigitBody2d::start() {}
+void RigitBody2d::setRotation(float angle)
+{
+	sf::Transformable::setRotation(angle);
+	onRotation();
+}
+
+void RigitBody2d::rotate(float angle)
+{
+	sf::Transformable::rotate(angle);
+	onRotation();
+}
+void RigitBody2d::setDirection(const rn::Vec2f &p)
+{
+	direction = p;
+}
+void RigitBody2d::setDirection(float x, float y)
+{
+	direction.x = x;
+	direction.y = y;
+}
+Direction RigitBody2d::getDirection() const
+{
+	return direction;
+}

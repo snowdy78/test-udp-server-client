@@ -9,6 +9,7 @@ protected:
 public:
 	virtual bool collide(const PolygonCollider &collider) const = 0;
 	virtual bool collide(const EllipseCollider &collider) const = 0;
+	// TODO add collider bounds
 };
 class PolygonCollider : public Collider
 {

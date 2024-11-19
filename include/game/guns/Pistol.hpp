@@ -4,6 +4,8 @@
 
 class Pistol : public Gun
 {
+	inline static sf::SoundBuffer sound_buffer = loadSound("shoot.ogg");
+
 	float disperse_angle = 5.f;
 public:
     Pistol(const Ship *ship);

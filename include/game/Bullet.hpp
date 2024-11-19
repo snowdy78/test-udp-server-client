@@ -6,17 +6,7 @@
 
 class Bullet : public rn::MonoBehaviour, public Collidable<EllipseCollider>
 {
-	static sf::SoundBuffer loadSound() {
-		sf::SoundBuffer sound_buffer;
-		if (!sound_buffer.loadFromFile("shoot.ogg")) {
-			std::cerr << "Failed to load sound file 'shoot.ogg'" << std::endl;
-			throw std::exception();
-		}
-		return sound_buffer;
-	}
 	inline static rn::StaticTexture texture{ "img/bullet_shoot.png" };
-	inline static sf::SoundBuffer sound_buffer = loadSound();
-	SoundDisperseEntity sound{ 200.f, 1000.f };
 	sf::Sprite sprite;
 
 	float mass		   = 0.100f;

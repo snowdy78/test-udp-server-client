@@ -2,7 +2,6 @@
 #include "game/Ship.hpp"
 
 Gun::~Gun() {}
-Gun::Gun(const Ship *ship) : ship(ship) {}
 void Gun::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
@@ -14,3 +13,10 @@ void Gun::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		}
 	}
 }
+Gun::Gun(const Ship *ship, const sf::SoundBuffer *buffer) : ship(ship)
+{
+	if (buffer)
+	{
+		sound.setBuffer(*buffer);
+	}
+};

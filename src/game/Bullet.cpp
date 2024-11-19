@@ -7,9 +7,7 @@
  */
 Bullet::Bullet() : sprite(*texture)
 {
-	sound.setBuffer(sound_buffer);
 	setOrigin(rn::Vec2f{ texture->getSize() / 2u });
-	sound.play();
 	updateCollider();
 }
 Bullet::~Bullet()
@@ -18,7 +16,6 @@ Bullet::~Bullet()
 
 void Bullet::update()
 {
-	sound.update();
 	velocity += acceleration;
 	acceleration *= 0.99f;
 	move(direction * velocity);
