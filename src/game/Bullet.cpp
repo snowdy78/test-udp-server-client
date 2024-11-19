@@ -9,7 +9,6 @@ Bullet::Bullet() : sprite(*texture)
 {
 	sound.setBuffer(sound_buffer);
 	setOrigin(rn::Vec2f{ texture->getSize() / 2u });
-	setCollisionType(CollisionType::Different);
 	sound.play();
 	updateCollider();
 }
@@ -21,6 +20,7 @@ void Bullet::update()
 {
 	sound.update();
 	velocity += acceleration;
+	acceleration *= 0.99f;
 	move(direction * velocity);
 	Collidable::updateCollisionState();
 }
@@ -103,9 +103,10 @@ const Collider *Bullet::getCollider() const
 {
 	return &collider;
 }
-bool Bullet::castToChild(const Collidable *collidable) const
+
+bool Bullet::resolve(const Collidable *collidable) const
 {
-	return dynamic_cast<const Bullet *>(collidable);
+	return !dynamic_cast<const Bullet *>(collidable);
 }
 const sf::Sprite &Bullet::getSprite() const
 {

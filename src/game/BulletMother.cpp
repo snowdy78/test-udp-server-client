@@ -55,3 +55,18 @@ void BulletMother::ChildBullet::onEvent(sf::Event &event)
 	if (bullet)
 		bullet->onEvent(event);
 }
+
+void BulletMother::start()
+{
+	for (auto &iterator: bullets)
+	{
+		iterator.start();
+	}
+}
+
+void BulletMother::onEvent(sf::Event &event) {
+	for (auto &iterator: bullets)
+	{
+		iterator.onEvent(event);
+	}
+}

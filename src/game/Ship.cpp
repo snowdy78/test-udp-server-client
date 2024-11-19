@@ -1,104 +1,70 @@
 #include "game/Ship.hpp"
+#include "game/AbstractShip.hpp"
 #include "game/Gun.hpp"
 
-Ship::Ship() : RigitBody2d(*texture) {}
-void Ship::shoot()
+Ship::Ship() : AbstractShip(*texture) {}
+
+void Ship::rotation()
 {
-	if (!gun)
-	{
-		return;
-	}
-	gun->shoot(getDirection2d());
-}
-void Ship::setGun(const Gun &gun)
-{
-	if (this->gun)
-		delete this->gun;
-	this->gun = gun.copy();
-	this->gun->setPosition(getPosition());
-}
-Ship::~Ship()
-{
-	delete gun;
+	using namespace rn::math;
+	rn::Vec2f dir_2d{ getDirection().x, getDirection().y };
+	const auto angle = rot(dir_2d);
+	setRotation(angle);
 }
 
-Ship::Ship(const Ship &ship) : RigitBody2d(*texture), gun(ship.gun->copy()) {}
-Ship::Ship(Ship &&ship) noexcept : RigitBody2d(*texture)
+void Ship::movement()
 {
-	gun		 = ship.gun;
-	ship.gun = nullptr;
-}
-void Ship::update()
-{
-	RigitBody2d::update();
-	if (gun)
+	using namespace rn::math;
+	std::unique_ptr<Direction> d_move = nullptr;
+	if (rn::isKeyhold(sf::Keyboard::W))
 	{
-		gun->update();
+		d_move = std::make_unique<Direction>(getDirection2d());
+	}
+	if (rn::isKeyhold(sf::Keyboard::S))
+	{
+		if (!d_move)
+		{
+			d_move = std::make_unique<Direction>(-getDirection2d());
+		}
+		*d_move -= getDirection2d();
+	}
+	if (rn::isKeyhold(sf::Keyboard::A))
+	{
+		if (!d_move)
+		{
+			d_move = std::make_unique<Direction>(nor(getDirection2d()));
+		}
+		*d_move += nor(getDirection2d());
+	}
+	if (rn::isKeyhold(sf::Keyboard::D))
+	{
+		if (!d_move)
+		{
+			d_move = std::make_unique<Direction>(-nor(getDirection2d()));
+		}
+		*d_move -= nor(getDirection2d());
+	}
+	if (d_move)
+	{
+		move(getVelocity() * d_move->x, getVelocity() * d_move->y);
 	}
 }
-void Ship::onEvent(sf::Event &event)
+bool Ship::resolve(const Collidable *collidable) const
 {
-	RigitBody2d::onEvent(event);
-	if (gun)
-	{
-		gun->onEvent(event);
-	}
-	if (rn::isKeydown(sf::Mouse::Left))
-	{
-		shoot();
-	}
+	return dynamic_cast<const Bullet *>(collidable);
 }
-void Ship::draw(sf::RenderTarget &target, sf::RenderStates states) const
-{
-	states.transform *= getTransform();
 
-	target.draw(sprite, states);
-	if (gun)
-		target.draw(*gun);
-}
-
-void Ship::setPosition(float x, float y)
+const Collider *Ship::getCollider() const
 {
-	sf::Transformable::setPosition(x, y);
-	if (gun)
-		gun->setPosition(x, y);
+	return &collider;
 }
-void Ship::setPosition(const rn::Vec2f &vector)
+void Ship::updateCollider()
 {
-	sf::Transformable::setPosition(vector);
-	if (gun)
-		gun->setPosition(vector);
+	rn::math::rectangle rect{ getGlobalBounds() };
+	collider.transform(rect);
 }
-void Ship::move(float x, float y)
+void Ship::onUpdatePosition()
 {
-	sf::Transformable::move(x, y);
-	if (gun)
-		gun->setPosition(getPosition());
-}
-void Ship::move(const rn::Vec2f &p)
-{
-	sf::Transformable::move(p);
-	if (gun)
-		gun->setPosition(getPosition());
-}
-Ship &Ship::operator=(const Ship &ship)
-{
-	if (this != &ship)
-	{
-		if (gun)
-			delete gun;
-		gun = ship.gun->copy();
-	}
-	return *this;
-}
-Ship &Ship::operator=(Ship &&ship) noexcept
-{
-	if (this != &ship)
-	{
-		if (gun)
-			delete gun;
-		gun		 = ship.gun;
-		ship.gun = nullptr;
-	}
-	return *this;
+	AbstractShip::onUpdatePosition();
+	updateCollider();
 }

@@ -4,7 +4,7 @@
 #include "SoundDisperseEntity.hpp"
 #include "decl.hpp"
 
-class Bullet : public rn::MonoBehaviour, public Collidable
+class Bullet : public rn::MonoBehaviour, public Collidable<EllipseCollider>
 {
 	static sf::SoundBuffer loadSound() {
 		sf::SoundBuffer sound_buffer;
@@ -21,11 +21,11 @@ class Bullet : public rn::MonoBehaviour, public Collidable
 
 	float mass		   = 0.100f;
 	float velocity	   = 0.03f;
-	float acceleration = (0.02f - 0.01f) / 250.f;
+	float acceleration = (0.2f - 0.1f) / 250.f;
 	rn::Vec2f direction{};
-	EllipseCollider collider;
-	void updateCollider();
-	
+protected:
+	void updateCollider() override;
+
 public:
 	Bullet();
 	~Bullet() override = 0;
@@ -47,7 +47,15 @@ public:
 	rn::Vec2f getSize() const;
 	bool isIntersected(const rn::Vec2f &point) const override;
 	const Collider *getCollider() const override;
-	bool castToChild(const Collidable *collidable) const override;
+	/**
+	 * \brief Resolves a collision between this Bullet and the given Collidable.
+	 *
+	 * The collision is resolved if the Collidable is not a Bullet.
+	 *
+	 * \param collidable The collidable to check against.
+	 * \return True if the collision is resolved, false otherwise.
+	 */
+	bool resolve(const Collidable *collidable) const override;
 	void update() override;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 

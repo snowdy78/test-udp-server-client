@@ -9,13 +9,15 @@ void AudioMenu::start()
 	player.setPosition(500, 500);
 	player.start();
 	player.setGun(Pistol(&player));
+	enemy.setPosition(400, 400);
 }
 
 void AudioMenu::update()
 {
 	window.clear();
 	player.update();
-
+	enemy.update();
+	window.draw(enemy);
 	window.draw(player);
 	window.display();
 }

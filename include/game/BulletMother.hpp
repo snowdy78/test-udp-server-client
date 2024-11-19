@@ -33,5 +33,7 @@ public:
 	BulletMother();
 
 	void summon(Bullet *bullet, const rn::Vec2f &direction);
+	void start() override;
 	void update() override;
+	void onEvent(sf::Event &event) override;
 };
