@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Collidable.hpp"
-#include "SoundDisperseEntity.hpp"
 #include "decl.hpp"
 
 class Bullet : public rn::MonoBehaviour, public Collidable<EllipseCollider>
@@ -48,6 +47,5 @@ public:
 	bool resolve(const Collidable *collidable) const override;
 	void update() override;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
-
 	virtual Bullet *copy() const = 0;
 };

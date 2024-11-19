@@ -2,7 +2,7 @@
 
 
 #include "BulletMother.hpp"
-#include "SFML/Audio/SoundBuffer.hpp"
+#include "SoundDisperseEntity.hpp"
 #include "decl.hpp"
 
 

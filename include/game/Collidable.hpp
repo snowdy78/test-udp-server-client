@@ -8,7 +8,7 @@ class Collidable
 {
 protected:
 	inline static std::vector<Collidable *> collidables{};
-	bool is_collide = false;
+	bool is_collide			= false;
 	bool is_collided_before = false;
 	T collider;
 	virtual void updateCollider() {}
@@ -21,8 +21,29 @@ public:
 	virtual void onCollisionEnter(Collidable *collidable) {}
 	virtual void onCollisionUpdate(Collidable *collidable) {}
 	virtual void onCollisionEnd(Collidable *collidable) {}
+	bool isCollisionEnter() const;
+	bool isCollisionUpdate() const;
+	bool isCollisionEnd() const;
 	virtual bool resolve(const Collidable *collidable) const = 0;
 };
+
+template<ColliderType T>
+bool Collidable<T>::isCollisionEnter() const
+{
+	return is_collide && !is_collided_before;
+}
+
+template<ColliderType T>
+bool Collidable<T>::isCollisionUpdate() const
+{
+	return is_collide && is_collided_before;
+}
+
+template<ColliderType T>
+bool Collidable<T>::isCollisionEnd() const
+{
+	return !is_collide && is_collided_before;
+}
 template<ColliderType T>
 Collidable<T>::~Collidable()
 {
@@ -39,7 +60,6 @@ template<ColliderType T>
 void Collidable<T>::updateCollisionState()
 {
 	std::vector<Collidable *> collisions{};
-
 	is_collide = false;
 	if (!resolve(this))
 		return;
@@ -53,6 +73,7 @@ void Collidable<T>::updateCollisionState()
 
 		if (auto el = dynamic_cast<const EllipseCollider *>(getCollider()))
 		{
+			// TODO fix before
 			is_collided_before = is_collide;
 			if (!is_collide)
 				is_collide = collidable->getCollider()->collide(*el);
@@ -61,6 +82,7 @@ void Collidable<T>::updateCollisionState()
 		}
 		else if (auto pl = dynamic_cast<const PolygonCollider *>(getCollider()))
 		{
+			// TODO fix before
 			is_collided_before = is_collide;
 			if (!is_collide)
 				is_collide = collidable->getCollider()->collide(*pl);
@@ -70,11 +92,11 @@ void Collidable<T>::updateCollisionState()
 	}
 	for (auto &collision: collisions)
 	{
-		if (is_collide && !is_collided_before)
+		if (isCollisionEnter())
 			onCollisionEnter(collision);
-		else if (is_collide && is_collided_before)
+		else if (isCollisionUpdate())
 			onCollisionUpdate(collision);
-		else if (!is_collide && is_collided_before)
+		else if (isCollisionEnd())
 			onCollisionEnd(collision);
 	}
 }

@@ -15,6 +15,8 @@ void BulletMother::ChildBullet::update()
 		}
 		else
 			bullet->update();
+		if (bullet->isCollisionEnter())
+			need_to_remove = true;
 	}
 }
 
