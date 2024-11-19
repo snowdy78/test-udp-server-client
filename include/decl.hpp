@@ -10,6 +10,8 @@ class Font
 public:
 	inline static sf::Font Default = rn::sys::loadFont("C:\\Windows\\Fonts\\arial.ttf");
 };
+
+
 struct ChatSocket;
 struct Client;
 struct Server;
@@ -21,7 +23,12 @@ class Bullet;
 class Ship;
 class BulletMother;
 class Gun;
-class Collidable;
 class Collider;
+
+template<class T>
+concept ColliderType = std::is_base_of<Collider, T>::value;
+
+template<ColliderType T>
+class CollidableObject;
 class PolygonCollider;
 class EllipseCollider;
