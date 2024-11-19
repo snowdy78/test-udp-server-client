@@ -45,3 +45,13 @@ void BulletMother::update()
 		bullets.erase(iterator);
 	}
 }
+void BulletMother::ChildBullet::start()
+{
+	if (bullet)
+		bullet->start();
+}
+void BulletMother::ChildBullet::onEvent(sf::Event &event)
+{
+	if (bullet)
+		bullet->onEvent(event);
+}
