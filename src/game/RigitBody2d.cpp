@@ -115,12 +115,7 @@ void RigitBody2d::update()
 	rotation();
 }
 
-void RigitBody2d::onEvent(sf::Event &event)
-{
-	if (rn::isKeydown(sf::Mouse::Left))
-	{
-	}
-}
+void RigitBody2d::onEvent(sf::Event &event) {}
 
 void RigitBody2d::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
