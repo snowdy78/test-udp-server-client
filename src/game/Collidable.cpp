@@ -19,35 +19,46 @@ Collidable::CollisionType Collidable::getCollisionType() const
 {
 	return collision_type;
 }
-void Collidable::update()
+void Collidable::updateCollisionState()
 {
 	for (auto &collidable: collidables)
 	{
-		if (!collidable)
-			std::cerr << "collidable is null\n";
-		if (getCollisionType() != CollisionType::Any)
+		collidable->is_collide = false;
+	}
+	for (auto &collidable1: collidables)
+	{
+		if (!collidable1 || collidable1->is_collide || collidable1->getCollisionType() == CollisionType::None)
 		{
-			if (getCollisionType() == CollisionType::None)
-			{
-				continue;
-			}
-			if (getCollisionType() == CollisionType::Same && castToChild(collidable))
-			{
-				continue;
-			}
-			if (getCollisionType() == CollisionType::Different && !castToChild(collidable))
-			{
-				continue;
-			}
+			continue;
 		}
-		
-		if (auto el = dynamic_cast<const EllipseCollider *>(this->getCollider()))
+		for (auto &collidable2: collidables)
 		{
-			collidable->getCollider()->collide(*el);
-		}
-		else if (auto pl = dynamic_cast<const PolygonCollider *>(this->getCollider()))
-		{
-			collidable->getCollider()->collide(*pl);
+			if (!collidable2)
+			{
+				std::cerr << "collidable is null\n";
+				continue;
+			}
+			if (collidable1 == collidable2 || collidable2->is_collide
+				|| collidable2->getCollisionType() == CollisionType::None
+				|| collidable1->getCollisionType() == CollisionType::Same && collidable1->castToChild(collidable2)
+				|| collidable1->getCollisionType() == CollisionType::Different
+					   && !collidable1->castToChild(collidable2))
+			{
+				continue;
+			}
+
+			if (auto el = dynamic_cast<const EllipseCollider *>(collidable1->getCollider()))
+			{
+				collidable1->is_collided_before = collidable1->is_collide;
+				collidable2->is_collided_before = collidable2->is_collide;
+				collidable1->is_collide = collidable2->is_collide = collidable2->getCollider()->collide(*el);
+			}
+			else if (auto pl = dynamic_cast<const PolygonCollider *>(collidable1->getCollider()))
+			{
+				collidable1->is_collided_before = collidable1->is_collide;
+				collidable2->is_collided_before = collidable2->is_collide;
+				collidable1->is_collide = collidable2->is_collide = collidable2->getCollider()->collide(*pl);
+			}
 		}
 	}
 }

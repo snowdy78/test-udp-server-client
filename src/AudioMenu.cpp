@@ -14,6 +14,7 @@ void AudioMenu::start()
 void AudioMenu::update()
 {
 	window.clear();
+	Collidable::updateCollisionState();
 	player.update();
 
 	window.draw(player);

@@ -76,11 +76,6 @@ void RigitBody2d::setPosition(float x, float y)
 	Listener::setUpVector(perp.x, perp.y, 0.f);
 }
 
-rn::Vec2f RigitBody2d::getPosition() const
-{
-	return Transformable::getPosition();
-}
-
 void RigitBody2d::move(float x, float y)
 {
 	Transformable::move(x, y);

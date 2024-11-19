@@ -38,13 +38,12 @@ public:
 	using Transformable::getPosition;
 	explicit RigitBody2d(const sf::Texture &texture);
 
-	void setPosition(const rn::Vec2f &p);
+	virtual void setPosition(const rn::Vec2f &p);
 
-	void setPosition(float x, float y);
+	virtual void setPosition(float x, float y);
 
-	rn::Vec2f getPosition() const;
-	void move(float x, float y);
-	void move(const rn::Vec2f &p);
+	virtual void move(float x, float y);
+	virtual void move(const rn::Vec2f &p);
 	static rn::Vec2f getDirection2d();
 
 	const sf::Sprite &getSprite() const;

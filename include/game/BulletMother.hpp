@@ -9,20 +9,19 @@ class BulletMother : public sf::Transformable, public rn::LogicalObject
 {
 	class ChildBullet
 	{
-		Bullet *bullet;
+		std::unique_ptr<Bullet> bullet = nullptr;
 		BulletMother *mother;
 		friend class BulletMother;
-		void remove();
+		bool need_to_remove = false;
 
 	public:
 		ChildBullet(BulletMother *mother, Bullet *bullet);
-		ChildBullet(const ChildBullet &bullet) : bullet(bullet.bullet), mother(bullet.mother) {
-
-		}
-		~ChildBullet();
-		const sf::Sprite *getSprite() const;
+		const Bullet *get() const;
+		/**
+		* Updates the state of the ChildBullet. If the bullet is too far from its
+		* mother, it marks itself for removal. Otherwise, it updates the bullet's state.
+		*/
 		void update();
-		void onCollide();
 	};
 
 protected:

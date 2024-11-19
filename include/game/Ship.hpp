@@ -20,8 +20,10 @@ public:
 	Ship(Ship &&ship) noexcept;
 	~Ship();
 
-	void setPosition(float x, float y);
-	void setPosition(const rn::Vec2f &vector);
+	void setPosition(float x, float y) override;
+	void setPosition(const rn::Vec2f &vector) override;
+	void move(float x, float y) override;
+	void move(const rn::Vec2f &p) override;
 	void update() override;
 	void onEvent(sf::Event &event) override;
 

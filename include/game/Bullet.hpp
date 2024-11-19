@@ -6,9 +6,17 @@
 
 class Bullet : public rn::MonoBehaviour, public Collidable
 {
+	static sf::SoundBuffer loadSound() {
+		sf::SoundBuffer sound_buffer;
+		if (!sound_buffer.loadFromFile("shoot.ogg")) {
+			std::cerr << "Failed to load sound file 'shoot.ogg'" << std::endl;
+			throw std::exception();
+		}
+		return sound_buffer;
+	}
 	inline static rn::StaticTexture texture{ "img/bullet_shoot.png" };
-	inline static sf::SoundBuffer sound_buffer;
-	inline static SoundDisperseEntity sound{ 200.f, 1000.f };
+	inline static sf::SoundBuffer sound_buffer = loadSound();
+	SoundDisperseEntity sound{ 200.f, 1000.f };
 	sf::Sprite sprite;
 
 	float mass		   = 0.100f;
@@ -17,7 +25,7 @@ class Bullet : public rn::MonoBehaviour, public Collidable
 	rn::Vec2f direction{};
 	EllipseCollider collider;
 	void updateCollider();
-
+	
 public:
 	Bullet();
 	~Bullet() override = 0;
@@ -28,6 +36,8 @@ public:
 	void setAcceleration(float acceleration);
 	void setPosition(float x, float y);
 	void setPosition(const rn::Vec2f &vector);
+	void move(float x, float y);
+	void move(const rn::Vec2f &p);
 
 	const rn::Vec2f &getDirection() const;
 	const sf::Sprite &getSprite() const;

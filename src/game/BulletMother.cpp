@@ -1,41 +1,29 @@
 #include "game/BulletMother.hpp"
 #include "game/Bullet.hpp"
 
-BulletMother::BulletMother() {}
 
-void BulletMother::ChildBullet::remove()
-{
-	for (auto iter = mother->bullets.begin(); iter != mother->bullets.end(); ++iter)
-	{
-		if (&*iter == this)
-		{
-			mother->bullets.erase(iter);
-			break;
-		}
-	}
-}
 BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet) : mother(mother), bullet(bullet) {}
 
-BulletMother::ChildBullet::~ChildBullet()
-{
-	delete bullet;
-}
 void BulletMother::ChildBullet::update()
 {
-	if (rn::math::length(mother->getPosition() - bullet->getPosition())
-		> static_cast<float>(2 * rn::VideoSettings::getResolution().x))
+	if (bullet && mother)
 	{
-		remove();
-	}
-	else
-	{
-		bullet->update();
+		if (rn::math::length(mother->getPosition() - bullet->getPosition())
+			> static_cast<float>(2 * rn::VideoSettings::getResolution().x))
+		{
+			need_to_remove = true;
+		}
+		else
+			bullet->update();
 	}
 }
-void BulletMother::ChildBullet::onCollide()
+
+const Bullet *BulletMother::ChildBullet::get() const
 {
-	remove();
+	return bullet.get();
 }
+BulletMother::BulletMother() {}
+
 void BulletMother::summon(Bullet *bullet, const rn::Vec2f &direction)
 {
 	bullet->setDirection(direction);
@@ -43,14 +31,17 @@ void BulletMother::summon(Bullet *bullet, const rn::Vec2f &direction)
 }
 void BulletMother::update()
 {
-	for (auto &bullet: bullets)
+	using namespace std::ranges;
+	std::vector<std::vector<ChildBullet>::iterator> remove_bullet_stack{};
+	for (auto bullet = bullets.begin(); bullet != bullets.end(); bullet++)
 	{
-		bullet.update();
+		bullet->update();
+		if (bullet->need_to_remove)
+			remove_bullet_stack.push_back(bullet);
 	}
-}
-const sf::Sprite *BulletMother::ChildBullet::getSprite() const
-{
-	if (bullet)
-		return &bullet->getSprite();
-	return nullptr;
+
+	for (auto &iterator: remove_bullet_stack)
+	{
+		bullets.erase(iterator);
+	}
 }

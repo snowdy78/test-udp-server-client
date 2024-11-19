@@ -1,4 +1,4 @@
-#include "Collider.hpp"
+#include "game/Collider.hpp"
 
 const rn::math::shape &PolygonCollider::getColliderShape() const
 {
