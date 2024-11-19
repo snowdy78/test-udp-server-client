@@ -1,10 +1,10 @@
 #pragma once
 
 #include "game/Gun.hpp"
-#include "game/bullets/BaseBullet.hpp"
 
 class Pistol : public Gun
 {
+	float disperse_angle = 5.f;
 public:
     Pistol(const Ship *ship);
 	void shoot(const rn::Vec2f &direction) override;

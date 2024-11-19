@@ -26,7 +26,7 @@ void Bullet::update()
 }
 void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	states.transform *= getTransform();
+	states.transform = getTransform();
 	target.draw(sprite, states);
 }
 rn::Vec2f Bullet::getSize() const

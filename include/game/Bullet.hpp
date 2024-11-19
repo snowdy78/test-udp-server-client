@@ -20,8 +20,8 @@ class Bullet : public rn::MonoBehaviour, public Collidable
 	sf::Sprite sprite;
 
 	float mass		   = 0.100f;
-	float velocity	   = 0.1f;
-	float acceleration = (0.2f - 0.1f) / 250.f;
+	float velocity	   = 0.03f;
+	float acceleration = (0.02f - 0.01f) / 250.f;
 	rn::Vec2f direction{};
 	EllipseCollider collider;
 	void updateCollider();
