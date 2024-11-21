@@ -19,7 +19,7 @@ void Bullet::update()
 	velocity += acceleration;
 	acceleration *= 0.99f;
 	move(direction * velocity);
-	Collidable::updateCollisionState();
+	updateCollisionState();
 }
 void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {

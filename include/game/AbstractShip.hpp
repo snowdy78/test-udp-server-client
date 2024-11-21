@@ -1,18 +1,19 @@
 #pragma once
 
 #include "RigitBody2d.hpp"
-#include "SFML/Graphics/Sprite.hpp"
+#include "Collidable.hpp"
 #include "decl.hpp"
 #include "game/Gun.hpp"
 
 
-class AbstractShip : public RigitBody2d
+class AbstractShip : public RigitBody2d, public Collidable
 {
 protected:
 	std::unique_ptr<Gun> gun = nullptr;
 	sf::Sprite sprite;
 	void updateGunPosition();
-
+	void updateCollider();
+	PolygonCollider collider;
 public:
 	AbstractShip(const sf::Texture &texture);
 	void setGun(const Gun &gun);
@@ -33,5 +34,6 @@ public:
 	sf::FloatRect getLocalBounds() const;
 	sf::FloatRect getGlobalBounds() const;
 	const sf::Sprite &getSprite() const;
+	const Collider *getCollider() const override;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 };

@@ -3,7 +3,7 @@
 #include "Collidable.hpp"
 #include "decl.hpp"
 
-class Bullet : public rn::MonoBehaviour, public Collidable<EllipseCollider>
+class Bullet : public rn::MonoBehaviour, public Collidable
 {
 	inline static rn::StaticTexture texture{ "img/bullet_shoot.png" };
 	sf::Sprite sprite;
@@ -12,8 +12,9 @@ class Bullet : public rn::MonoBehaviour, public Collidable<EllipseCollider>
 	float velocity	   = 0.03f;
 	float acceleration = (0.2f - 0.1f) / 250.f;
 	rn::Vec2f direction{};
+	EllipseCollider collider;
 protected:
-	void updateCollider() override;
+	void updateCollider();
 
 public:
 	Bullet();

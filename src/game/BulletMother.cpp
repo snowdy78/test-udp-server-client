@@ -1,6 +1,4 @@
 #include "game/BulletMother.hpp"
-#include "game/Bullet.hpp"
-
 
 BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet) : mother(mother), bullet(bullet) {}
 
