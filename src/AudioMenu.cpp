@@ -16,6 +16,7 @@ void AudioMenu::update()
 {
 	window.clear();
 	player.update();
+	
 	enemy.update();
 	window.draw(enemy);
 	window.draw(player);

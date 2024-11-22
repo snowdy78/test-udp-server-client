@@ -5,10 +5,7 @@
 
 EnemyShip::EnemyShip() : AbstractShip(*texture) {}
 
-bool EnemyShip::resolve(const Collidable *collidable) const
-{
-	return dynamic_cast<const Bullet *>(collidable);
-}
+
 
 void EnemyShip::onMove()
 {

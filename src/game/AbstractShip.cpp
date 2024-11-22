@@ -91,3 +91,8 @@ const Collider *AbstractShip::getCollider() const
 void AbstractShip::updateCollider() {
 	collider.transform(rn::math::rectangle(getGlobalBounds()));
 }
+bool AbstractShip::resolve(const Collidable *collidable) const
+{
+	return dynamic_cast<const Bullet *>(collidable);
+}
+

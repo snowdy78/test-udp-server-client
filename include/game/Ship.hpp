@@ -25,6 +25,4 @@ public:
 	void update() override;
 	void onMove() override;
 	void onRotation() override;
-
-	bool resolve(const Collidable *collidable) const override;
 };

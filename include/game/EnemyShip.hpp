@@ -13,5 +13,4 @@ public:
 	~EnemyShip() override = default;
 	void onMove() override;
 	void update() override;
-	bool resolve(const Collidable *collidable) const override;
 };

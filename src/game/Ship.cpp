@@ -47,17 +47,13 @@ void Ship::movement()
 		move(getVelocity() * d_move->x, getVelocity() * d_move->y);
 	}
 }
-bool Ship::resolve(const Collidable *collidable) const
-{
-	return dynamic_cast<const Bullet *>(collidable);
-}
 
 void Ship::onMove()
 {
 	sf::Listener::setPosition(getPosition().x, getPosition().y, 0);
 	rn::Vec2f perp = rn::math::nor(getPosition());
 	sf::Listener::setUpVector(perp.x, perp.y, 0.f);
-	onMove();
+	AbstractShip::onMove();
 	updateCollider();
 }
 void Ship::onRotation()
