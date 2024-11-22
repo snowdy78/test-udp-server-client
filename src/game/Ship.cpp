@@ -1,7 +1,6 @@
 #include "game/Ship.hpp"
-#include "SFML/Audio/Listener.hpp"
 #include "game/AbstractShip.hpp"
-#include "game/Gun.hpp"
+#include "game/Bullet.hpp"
 
 Ship::Ship() : AbstractShip(*texture) {}
 
@@ -48,20 +47,7 @@ void Ship::movement()
 		move(getVelocity() * d_move->x, getVelocity() * d_move->y);
 	}
 }
-bool Ship::resolve(const Collidable *collidable) const
-{
-	return dynamic_cast<const Bullet *>(collidable);
-}
 
-const Collider *Ship::getCollider() const
-{
-	return &collider;
-}
-void Ship::updateCollider()
-{
-	rn::math::rectangle rect{ getGlobalBounds() };
-	collider.transform(rect);
-}
 void Ship::onMove()
 {
 	sf::Listener::setPosition(getPosition().x, getPosition().y, 0);

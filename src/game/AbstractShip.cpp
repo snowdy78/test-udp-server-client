@@ -1,5 +1,7 @@
 #include "game/AbstractShip.hpp"
+#include "game/Gun.hpp"
 #include "game/RigitBody2d.hpp"
+
 
 AbstractShip::AbstractShip(const sf::Texture &texture) : sprite(texture) {}
 rn::Vec2f AbstractShip::getSize() const
@@ -60,7 +62,6 @@ void AbstractShip::onEvent(sf::Event &event)
 		shoot();
 	}
 }
-
 void AbstractShip::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
@@ -71,13 +72,27 @@ void AbstractShip::draw(sf::RenderTarget &target, sf::RenderStates states) const
 void AbstractShip::onMove()
 {
 	updateGunPosition();
+	updateCollider();
 }
 void AbstractShip::onRotation() {}
 const sf::Sprite &AbstractShip::getSprite() const
 {
 	return sprite;
 }
-void AbstractShip::updateGunPosition() {
+void AbstractShip::updateGunPosition()
+{
 	if (gun)
 		gun->setPosition(getPosition());
 }
+const Collider *AbstractShip::getCollider() const
+{
+	return &collider;
+}
+void AbstractShip::updateCollider() {
+	collider.transform(rn::math::rectangle(getGlobalBounds()));
+}
+bool AbstractShip::resolve(const Collidable *collidable) const
+{
+	return dynamic_cast<const Bullet *>(collidable);
+}
+

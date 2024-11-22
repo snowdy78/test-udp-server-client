@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "Bullet.hpp"
+#include "game/Bullet.hpp"
 #include "decl.hpp"
 
 

@@ -1,6 +1,4 @@
 #include "game/BulletMother.hpp"
-#include "game/Bullet.hpp"
-
 
 BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet) : mother(mother), bullet(bullet) {}
 
@@ -15,6 +13,8 @@ void BulletMother::ChildBullet::update()
 		}
 		else
 			bullet->update();
+		if (bullet->isCollisionEnter())
+			need_to_remove = true;
 	}
 }
 
