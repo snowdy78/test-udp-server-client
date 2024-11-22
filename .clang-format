@@ -19,6 +19,9 @@ AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: Empty
 AllowShortLoopsOnASingleLine: false
+PackConstructorInitializers: Never 
+PenaltyBreakAssignment: 1
+PenaltyBreakBeforeFirstCallParameter: 1
 BraceWrapping: 
   AfterCaseLabel: true
   AfterClass: true
@@ -73,7 +76,6 @@ MacroBlockBegin: ''
 MacroBlockEnd: ''
 MaxEmptyLinesToKeep: 2
 NamespaceIndentation: All
-PackConstructorInitializers: NextLine
 SpaceAfterCStyleCast: true
 SpaceAfterTemplateKeyword: false
 SpaceBeforeRangeBasedForLoopColon: false
