@@ -1,4 +1,7 @@
-*build*
+/*build*
 /out
 /.cache
 .vscode
+/bin/*.dll
+/bin/*.exe
+/bin/src/
