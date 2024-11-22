@@ -3,7 +3,10 @@
 #include "game/RigitBody2d.hpp"
 
 
-AbstractShip::AbstractShip(const sf::Texture &texture) : sprite(texture) {}
+AbstractShip::AbstractShip(const sf::Texture &texture) :
+	sprite(texture)
+{
+}
 rn::Vec2f AbstractShip::getSize() const
 {
 	return rn::Vec2f(sprite.getTexture()->getSize());
@@ -64,15 +67,18 @@ void AbstractShip::onEvent(sf::Event &event)
 }
 void AbstractShip::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
+	sf::RenderStates st = states; 
 	states.transform *= getTransform();
 	if (gun)
 		target.draw(*gun, states);
 	target.draw(sprite, states);
+	target.draw(health_bar, st);
 }
 void AbstractShip::onMove()
 {
 	updateGunPosition();
 	updateCollider();
+	health_bar.setPosition(getPosition() + rn::Vec2f{0, getSize().y});
 }
 void AbstractShip::onRotation() {}
 const sf::Sprite &AbstractShip::getSprite() const
@@ -88,11 +94,11 @@ const Collider *AbstractShip::getCollider() const
 {
 	return &collider;
 }
-void AbstractShip::updateCollider() {
+void AbstractShip::updateCollider()
+{
 	collider.transform(rn::math::rectangle(getGlobalBounds()));
 }
 bool AbstractShip::resolve(const Collidable *collidable) const
 {
 	return dynamic_cast<const Bullet *>(collidable);
 }
-

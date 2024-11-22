@@ -1,12 +1,13 @@
 #pragma once
 
+#include "Hittable.hpp"
 #include "RigitBody2d.hpp"
 #include "Collidable.hpp"
 #include "decl.hpp"
 #include "game/Gun.hpp"
 
 
-class AbstractShip : public RigitBody2d, public Collidable
+class AbstractShip : public RigitBody2d, public Collidable, public Hittable
 {
 protected:
 	std::unique_ptr<Gun> gun = nullptr;
