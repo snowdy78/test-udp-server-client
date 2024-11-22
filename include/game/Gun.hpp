@@ -21,7 +21,7 @@ protected:
 	}
 	SoundDisperseEntity sound{ 20.f, 100.f };
 
-	const Ship *ship;
+	const AbstractShip *ship;
 
 	void setClearSoundDistance(float distance)
 	{
@@ -31,9 +31,10 @@ protected:
 	{
 		sound.setDisperseRadius(radius);
 	}
-
+	
 public:
-	Gun(const Ship *ship, const sf::SoundBuffer *buffer = nullptr);
+	const AbstractShip *const &user = ship;
+	Gun(const AbstractShip *user, const sf::SoundBuffer *buffer = nullptr);
 	virtual ~Gun()								   = 0;
 	virtual void shoot(const rn::Vec2f &direction) = 0;
 	virtual Bullet *createBullet() const		   = 0;

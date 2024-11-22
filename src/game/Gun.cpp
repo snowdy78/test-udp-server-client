@@ -1,5 +1,5 @@
 #include "game/Gun.hpp"
-#include "game/Ship.hpp"
+#include "game/AbstractShip.hpp"
 
 Gun::~Gun() {}
 void Gun::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -13,8 +13,8 @@ void Gun::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		}
 	}
 }
-Gun::Gun(const Ship *ship, const sf::SoundBuffer *buffer)
-	: ship(ship)
+Gun::Gun(const AbstractShip *user, const sf::SoundBuffer *buffer)
+	: ship(user)
 {
 	if (buffer)
 	{

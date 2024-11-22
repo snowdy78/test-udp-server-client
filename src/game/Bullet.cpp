@@ -1,12 +1,13 @@
 #include "game/Bullet.hpp"
-
+#include "game/AbstractShip.hpp"
+#include "game/Gun.hpp"
 /**
  * \brief Default constructor for Bullet
  *
  * Construct a Bullet object with the image set to the contents of Bullet::texture
  */
-Bullet::Bullet()
-	: sprite(*texture)
+Bullet::Bullet(const Gun *gun)
+	: sprite(*texture), author(gun)
 {
 	setOrigin(rn::Vec2f{ texture->getSize() / 2u });
 	updateCollider();
@@ -102,7 +103,7 @@ const Collider *Bullet::getCollider() const
 
 bool Bullet::resolve(const Collidable *collidable) const
 {
-	return !dynamic_cast<const Bullet *>(collidable);
+	return !dynamic_cast<const Bullet *>(collidable) && (!gun || dynamic_cast<const AbstractShip *>(collidable) != gun->user);
 }
 const sf::Sprite &Bullet::getSprite() const
 {

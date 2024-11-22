@@ -101,3 +101,10 @@ bool AbstractShip::resolve(const Collidable *collidable) const
 {
 	return dynamic_cast<const Bullet *>(collidable);
 }
+void AbstractShip::onCollisionEnter(Collidable *collidable)
+{
+	if (auto dd = dynamic_cast<const DamageDealer *>(collidable))
+	{
+		takeDamage(dd->getDamage());
+	}
+}

@@ -32,6 +32,7 @@ public:
 	void onEvent(sf::Event &event) override;
 	void onMove() override;
 	void onRotation() override;
+	void onCollisionEnter(Collidable *collidable) override;
 	sf::FloatRect getLocalBounds() const;
 	sf::FloatRect getGlobalBounds() const;
 	const sf::Sprite &getSprite() const;

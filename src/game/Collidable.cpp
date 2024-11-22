@@ -1,12 +1,10 @@
 #include "game/Collidable.hpp"
+#include "game/Bullet.hpp" // TODO : remove
 
 void Collidable::setCollisionExist(bool value)
 {
-	if (is_collide != value)
-	{
-		is_collided_before = is_collide;
-		is_collide		   = value;
-	}
+	is_collided_before = is_collide;
+	is_collide		   = is_collide || value;
 }
 bool Collidable::isCollisionEnter() const
 {
@@ -38,7 +36,7 @@ Collidable::Collidable()
 void Collidable::updateCollisionState()
 {
 	std::vector<Collidable *> collisions{};
-	is_collide = false;
+	resetCollisionState();
 
 	for (auto &collidable: collidables)
 	{
@@ -70,4 +68,9 @@ void Collidable::updateCollisionState()
 		else if (isCollisionEnd())
 			onCollisionEnd(collision);
 	}
+}
+void Collidable::resetCollisionState()
+{
+	is_collided_before = false;
+	is_collide = false;
 }

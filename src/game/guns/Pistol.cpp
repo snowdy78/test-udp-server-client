@@ -1,8 +1,9 @@
 #include "game/guns/Pistol.hpp"
+#include "game/AbstractShip.hpp"
 #include "game/bullets/BaseBullet.hpp"
 
-Pistol::Pistol(const Ship *ship) :
-	Gun(ship, &sound_buffer)
+Pistol::Pistol(const AbstractShip *ship)
+	: Gun(ship, &sound_buffer)
 {}
 void Pistol::shoot(const rn::Vec2f &direction)
 {
@@ -16,11 +17,11 @@ void Pistol::shoot(const rn::Vec2f &direction)
 }
 Bullet *Pistol::createBullet() const
 {
-	auto bullet = new BaseBullet;
+	auto bullet = new BaseBullet(this);
 	bullet->setPosition(getPosition());
 	return bullet;
 }
 Gun *Pistol::copy() const
 {
-	return new Pistol(ship);
+	return new Pistol(user);
 }

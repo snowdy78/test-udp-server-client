@@ -10,6 +10,8 @@ protected:
 	bool is_collide			= false;
 	bool is_collided_before = false;
 	void setCollisionExist(bool value);
+	void resetCollisionState();
+
 public:
 	Collidable();
 	virtual ~Collidable()						= 0;

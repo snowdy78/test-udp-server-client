@@ -4,9 +4,10 @@
 
 class Hittable
 {
-protected:
 	float health	 = 100.f;
 	float max_health = 100.f;
+
+protected:
 	friend class HealthBar;
 	class HealthBar : public sf::Drawable, public sf::Transformable
 	{
@@ -16,28 +17,18 @@ protected:
 		rn::Rect fill_bar;
 		rn::Rect back_bar;
 		const Hittable &hittable;
+		void updateHealthBar();
+		friend class Hittable;
 
 	public:
-		HealthBar(const Hittable &hittable) :
-			ui({ 32, 8 }),
-			hittable(hittable)
-		{
-			ui.setTexture(&*texture);
-			fill_bar.setSize({ hittable.health * bar_size.x / 100.f, bar_size.y });
-			fill_bar.setSize({ hittable.health * bar_size.x / 100.f, bar_size.y });
-			fill_bar.setPosition(1, 1);
-			back_bar.setPosition(1, 1);
-			fill_bar.setFillColor(sf::Color::Green);
-			back_bar.setFillColor(sf::Color::Red);
-		}
-		void draw(sf::RenderTarget &target, sf::RenderStates states) const override
-		{
-			states.transform *= getTransform();
-			target.draw(back_bar, states);
-			target.draw(fill_bar, states);
-			target.draw(ui, states);
-		}
+		HealthBar(const Hittable &hittable);
+		void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 	};
-    HealthBar health_bar{*this};
+	HealthBar health_bar{ *this };
+
 public:
+	float getMaxHealth() const;
+	void takeDamage(float damage);
+	float getHealth();
+	virtual void onHit();
 };

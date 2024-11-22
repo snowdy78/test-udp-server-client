@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Collidable.hpp"
+#include "DamageDealer.hpp"
 #include "decl.hpp"
 
-class Bullet : public rn::MonoBehaviour, public Collidable
+class Bullet : public rn::MonoBehaviour, public Collidable, virtual public DamageDealer
 {
 	inline static rn::StaticTexture texture{ "img/bullet_shoot.png" };
 	sf::Sprite sprite;
@@ -13,13 +14,15 @@ class Bullet : public rn::MonoBehaviour, public Collidable
 	float acceleration = (0.2f - 0.1f) / 250.f;
 	rn::Vec2f direction{};
 	EllipseCollider collider;
+	const Gun *author = nullptr;
+
 protected:
 	void updateCollider();
 
 public:
-	Bullet();
+	Gun const *const &gun = author;
+	Bullet(const Gun *gun);
 	~Bullet() override = 0;
-
 	void setDirection(const rn::Vec2f &direction);
 	void setMass(float mass);
 	void setVelocity(float velocity);

@@ -25,3 +25,6 @@ class Collider;
 class Collidable;
 class PolygonCollider;
 class EllipseCollider;
+class AbstractShip;
+class DamageDealer;
+class Hittable;

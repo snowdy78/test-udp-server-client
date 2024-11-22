@@ -1,7 +1,7 @@
 #include "game/bullets/BaseBullet.hpp"
 
-BaseBullet::BaseBullet() = default;
+BaseBullet::BaseBullet(const Gun *gun) : Bullet(gun), init_dmg(initial_damage) {}
 Bullet *BaseBullet::copy() const
 {
-	return new BaseBullet();
+	return new BaseBullet(gun);
 }
