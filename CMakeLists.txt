@@ -36,3 +36,24 @@ if(WIN32)
         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:${PROJECT_NAME}>
     VERBATIM)
 endif()
+
+function(target_link_sfml_libraries TARGET)
+    target_link_libraries(${TARGET} PUBLIC sfml-graphics)
+    target_link_libraries(${TARGET} PUBLIC sfml-network)
+    target_link_libraries(${TARGET} PUBLIC sfml-window)
+    target_link_libraries(${TARGET} PUBLIC sfml-system)
+    target_link_libraries(${TARGET} PUBLIC sfml-audio)
+    target_link_libraries(${TARGET} PUBLIC sfml-main)
+endfunction()
+
+set(PROJECT_LIBRARY_NAME ${PROJECT_NAME}Lib)
+
+add_library(${PROJECT_LIBRARY_NAME} STATIC ${PROJECT_SOURCE_FILES} ${PROJECT_INCLUDE_FILES})
+target_link_libraries(${PROJECT_LIBRARY_NAME} PUBLIC RuneEngine)
+target_link_sfml_libraries(${PROJECT_LIBRARY_NAME})
+target_include_directories(
+    ${PROJECT_LIBRARY_NAME}
+    PRIVATE
+    ${APP_SOURCE_DIR}/include
+)
+add_subdirectory(test)
