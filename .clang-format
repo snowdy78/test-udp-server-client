@@ -19,9 +19,6 @@ AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: Empty
 AllowShortLoopsOnASingleLine: false
-PackConstructorInitializers: Never 
-PenaltyBreakAssignment: 1
-PenaltyBreakBeforeFirstCallParameter: 1
 BraceWrapping: 
   AfterCaseLabel: true
   AfterClass: true
@@ -43,7 +40,10 @@ BraceWrapping:
 BreakBeforeBinaryOperators: All
 BreakBeforeBraces: Custom
 BreakBeforeInlineASMColon: Never
-BreakConstructorInitializers: AfterColon
+PackConstructorInitializers: Never 
+PenaltyBreakAssignment: 1
+PenaltyBreakBeforeFirstCallParameter: 1
+BreakConstructorInitializers: BeforeColon
 BreakConstructorInitializersBeforeComma: false
 BreakBeforeConceptDeclarations: Always
 AlwaysBreakAfterDefinitionReturnType: false
