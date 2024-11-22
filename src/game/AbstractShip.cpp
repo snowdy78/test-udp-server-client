@@ -3,10 +3,9 @@
 #include "game/RigitBody2d.hpp"
 
 
-AbstractShip::AbstractShip(const sf::Texture &texture) :
-	sprite(texture)
-{
-}
+AbstractShip::AbstractShip(const sf::Texture &texture)
+	: sprite(texture)
+{}
 rn::Vec2f AbstractShip::getSize() const
 {
 	return rn::Vec2f(sprite.getTexture()->getSize());
@@ -67,7 +66,7 @@ void AbstractShip::onEvent(sf::Event &event)
 }
 void AbstractShip::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	sf::RenderStates st = states; 
+	sf::RenderStates st = states;
 	states.transform *= getTransform();
 	if (gun)
 		target.draw(*gun, states);
@@ -78,7 +77,7 @@ void AbstractShip::onMove()
 {
 	updateGunPosition();
 	updateCollider();
-	health_bar.setPosition(getPosition() + rn::Vec2f{0, getSize().y});
+	health_bar.setPosition(getPosition() + rn::Vec2f{ 0, getSize().y });
 }
 void AbstractShip::onRotation() {}
 const sf::Sprite &AbstractShip::getSprite() const

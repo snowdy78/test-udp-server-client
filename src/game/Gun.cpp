@@ -13,7 +13,8 @@ void Gun::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		}
 	}
 }
-Gun::Gun(const Ship *ship, const sf::SoundBuffer *buffer) : ship(ship)
+Gun::Gun(const Ship *ship, const sf::SoundBuffer *buffer)
+	: ship(ship)
 {
 	if (buffer)
 	{

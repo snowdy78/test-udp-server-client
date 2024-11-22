@@ -31,7 +31,7 @@ void PolygonCollider::transform(rn::math::polygon polygon)
 {
 	shape = polygon;
 }
-bool EllipseCollider::collide(const EllipseCollider &collider) const 
+bool EllipseCollider::collide(const EllipseCollider &collider) const
 {
 	rn::Circle circle = rn::Circle(shape.r);
 	circle.setScale(shape.a, shape.b);

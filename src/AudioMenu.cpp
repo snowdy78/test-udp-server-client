@@ -1,7 +1,8 @@
 #include "AudioMenu.hpp"
 #include "game/guns/Pistol.hpp"
 
-AudioMenu::AudioMenu(sf::RenderWindow &window) : MenuBranch(window)
+AudioMenu::AudioMenu(sf::RenderWindow &window)
+	: MenuBranch(window)
 {}
 
 void AudioMenu::start()
@@ -16,7 +17,7 @@ void AudioMenu::update()
 {
 	window.clear();
 	player.update();
-	
+
 	enemy.update();
 	window.draw(enemy);
 	window.draw(player);

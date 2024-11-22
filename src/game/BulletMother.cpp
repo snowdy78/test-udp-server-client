@@ -1,6 +1,9 @@
 #include "game/BulletMother.hpp"
 
-BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet) : mother(mother), bullet(bullet) {}
+BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet)
+	: mother(mother),
+	  bullet(bullet)
+{}
 
 void BulletMother::ChildBullet::update()
 {
@@ -64,7 +67,8 @@ void BulletMother::start()
 	}
 }
 
-void BulletMother::onEvent(sf::Event &event) {
+void BulletMother::onEvent(sf::Event &event)
+{
 	for (auto &iterator: bullets)
 	{
 		iterator.onEvent(event);

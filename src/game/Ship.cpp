@@ -2,7 +2,9 @@
 #include "game/AbstractShip.hpp"
 #include "game/Bullet.hpp"
 
-Ship::Ship() : AbstractShip(*texture) {}
+Ship::Ship()
+	: AbstractShip(*texture)
+{}
 
 void Ship::rotation()
 {
@@ -58,7 +60,7 @@ void Ship::onMove()
 }
 void Ship::onRotation()
 {
-	sf::Listener::setDirection({getDirection().x, getDirection().y, 0.f});
+	sf::Listener::setDirection({ getDirection().x, getDirection().y, 0.f });
 	AbstractShip::onRotation();
 	updateCollider();
 }

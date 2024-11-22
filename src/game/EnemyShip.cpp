@@ -3,8 +3,9 @@
 #include "game/Bullet.hpp"
 
 
-EnemyShip::EnemyShip() : AbstractShip(*texture) {}
-
+EnemyShip::EnemyShip()
+	: AbstractShip(*texture)
+{}
 
 
 void EnemyShip::onMove()

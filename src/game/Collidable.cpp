@@ -1,11 +1,11 @@
 #include "game/Collidable.hpp"
-#include "game/Bullet.hpp"
+
 void Collidable::setCollisionExist(bool value)
 {
-	if (is_collide != value) 
+	if (is_collide != value)
 	{
 		is_collided_before = is_collide;
-		is_collide = value;
+		is_collide		   = value;
 	}
 }
 bool Collidable::isCollisionEnter() const

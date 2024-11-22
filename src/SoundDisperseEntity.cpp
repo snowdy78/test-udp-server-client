@@ -2,8 +2,9 @@
 
 SoundDisperseEntity::SoundDisperseEntity(
 	float clear_sound_distance, float disperse_force, const sf::SoundBuffer *buffer
-) :
-	clear_dist(clear_sound_distance), disperse_radius(disperse_force)
+)
+	: clear_dist(clear_sound_distance),
+	  disperse_radius(disperse_force)
 {
 	if (buffer)
 	{

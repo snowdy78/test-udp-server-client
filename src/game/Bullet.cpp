@@ -5,14 +5,13 @@
  *
  * Construct a Bullet object with the image set to the contents of Bullet::texture
  */
-Bullet::Bullet() : sprite(*texture)
+Bullet::Bullet()
+	: sprite(*texture)
 {
 	setOrigin(rn::Vec2f{ texture->getSize() / 2u });
 	updateCollider();
 }
-Bullet::~Bullet()
-{
-}
+Bullet::~Bullet() {}
 
 void Bullet::update()
 {
