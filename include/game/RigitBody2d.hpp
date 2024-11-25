@@ -24,7 +24,7 @@ public:
 };
 class RigitBody2d : public rn::MonoBehaviour
 {
-	float velocity = 100.f/rn::FPS;
+	float velocity = 0.3f;
 	Direction direction{};
 	rn::Vec2f countDirection() const;
 public:

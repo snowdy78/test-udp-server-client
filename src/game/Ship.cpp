@@ -67,5 +67,4 @@ void Ship::onRotation()
 void Ship::onHit() 
 {
 	AbstractShip::onHit();
-	std::cout << "I'm a ship!\n"; // TODO: remove
 }

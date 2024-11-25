@@ -8,8 +8,8 @@
 
 class AudioMenu : public rn::MenuBranch
 {
-	Ship player{};
-	EnemyShip enemy{};
+	std::unique_ptr<Ship> player{new Ship()};
+	std::unique_ptr<EnemyShip> enemy{new EnemyShip()};
 public:
 	explicit AudioMenu(sf::RenderWindow &window);
 

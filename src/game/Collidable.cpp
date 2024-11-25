@@ -39,19 +39,16 @@ void Collidable::updateCollisionState()
 		collidable->resetCollisionState();
 		for (auto &obstacle: collidables)
 		{
-			collideObjects(collidable, obstacle);
+			if (!collideObjects(collidable, obstacle))
+				continue;
 		}
 	}
+
 	for (auto &collidable: collidables)
 	{
 		for (auto &collision: collidable->collisions_at_state)
 		{
-			if (collidable->isCollisionEnter())
-				collidable->onCollisionEnter(collision);
-			else if (collidable->isCollisionUpdate())
-				collidable->onCollisionUpdate(collision);
-			else if (collidable->isCollisionEnd())
-				collidable->onCollisionEnd(collision);
+			updateState(collidable, collision);
 		}
 	}
 }
@@ -62,25 +59,32 @@ void Collidable::resetCollisionState()
 }
 bool Collidable::collideObjects(Collidable *collidable, Collidable *obstacle)
 {
-	if (obstacle == collidable || !obstacle->resolve(collidable))
+	bool collision_state = false;
+	if (obstacle == collidable || !collidable->resolve(obstacle))
 	{
-		return false;
+		return collision_state;
 	}
-	if (auto el = dynamic_cast<const EllipseCollider *>(obstacle->getCollider()))
-	{
-		bool collision_state = collidable->getCollider()->collide(*el);
-		obstacle->setCollisionState(collision_state);
-		if (collision_state || obstacle->is_collided_before)
-			obstacle->collisions_at_state.push_back(collidable);
-		return true;
-	}
-	else if (auto pl = dynamic_cast<const PolygonCollider *>(obstacle->getCollider()))
-	{
-		bool collision_state = collidable->getCollider()->collide(*pl);
-		obstacle->setCollisionState(collision_state);
-		if (collision_state || obstacle->is_collided_before)
-			obstacle->collisions_at_state.push_back(collidable);
-		return true;
-	}
-	return false;
+	auto el = dynamic_cast<const EllipseCollider *>(obstacle->getCollider());
+	auto pl = dynamic_cast<const PolygonCollider *>(obstacle->getCollider());
+	if (!el && !pl)
+		return collision_state;
+
+	if (el)
+		collision_state = collidable->getCollider()->collide(*el);
+	else
+		collision_state = collidable->getCollider()->collide(*pl);
+	collidable->setCollisionState(collision_state);
+	if (collision_state || collidable->is_collided_before)
+		collidable->collisions_at_state.push_back(obstacle);
+
+	return collision_state;
+}
+void Collidable::updateState(Collidable *collidable, Collidable *obstacle)
+{
+	if (collidable->isCollisionEnter())
+		collidable->onCollisionEnter(obstacle);
+	else if (collidable->isCollisionUpdate())
+		collidable->onCollisionUpdate(obstacle);
+	else if (collidable->isCollisionEnd())
+		collidable->onCollisionEnd(obstacle);
 }

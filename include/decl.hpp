@@ -26,5 +26,6 @@ class Collidable;
 class PolygonCollider;
 class EllipseCollider;
 class AbstractShip;
+class SpaceField;
 class DamageDealer;
 class Hittable;

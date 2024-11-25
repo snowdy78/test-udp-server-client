@@ -10,7 +10,7 @@ class Bullet : public rn::MonoBehaviour, public Collidable, virtual public Damag
 	sf::Sprite sprite;
 
 	float mass		   = 0.100f;
-	float velocity	   = 0.03f;
+	float velocity	   = 0.3f;
 	float acceleration = (0.2f - 0.1f) / 250.f;
 	rn::Vec2f direction{};
 	EllipseCollider collider;

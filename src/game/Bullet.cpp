@@ -112,11 +112,13 @@ const sf::Sprite &Bullet::getSprite() const
 }
 void Bullet::destroy() const
 {
-	const_cast<Gun *>(author)->destroy(this);
+	if (author)
+	{
+		const_cast<Gun *>(author)->destroy(this);
+	}
 }
 void Bullet::onCollisionEnter(Collidable *collidable)
 {
-	std::cout << "I'm a bullet\n"; // TODO: remove
 	if (auto dd = dynamic_cast<Hittable *>(collidable))
 	{
 		destroy();

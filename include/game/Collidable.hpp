@@ -12,6 +12,7 @@ class Collidable
 	void setCollisionState(bool value);
 	static bool collideObjects(Collidable *collidable, Collidable *obstacle);
 	void resetCollisionState();
+	static void updateState(Collidable *collidable, Collidable *obstacle);
 
 public:
 	Collidable();

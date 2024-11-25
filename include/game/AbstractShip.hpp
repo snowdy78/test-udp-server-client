@@ -37,6 +37,7 @@ public:
 	sf::FloatRect getGlobalBounds() const;
 	const sf::Sprite &getSprite() const;
 	const Collider *getCollider() const override;
+	void onHit() override;
 	bool resolve(const Collidable *collidable) const override;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 };
