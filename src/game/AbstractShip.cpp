@@ -99,7 +99,10 @@ void AbstractShip::updateCollider()
 }
 bool AbstractShip::resolve(const Collidable *collidable) const
 {
-	return dynamic_cast<const Bullet *>(collidable);
+	auto bullet = dynamic_cast<const Bullet *>(collidable);
+	bool state	= bullet;
+	state		= state && bullet->gun->user != this;
+	return state;
 }
 void AbstractShip::onCollisionEnter(Collidable *collidable)
 {

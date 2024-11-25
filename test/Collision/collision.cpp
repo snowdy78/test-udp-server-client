@@ -40,8 +40,7 @@ enum CollisionState {
 };
 void requireCollisionState(MyCollidable &obj1, MyCollidable &obj2, CollisionState state)
 {
-	obj1.updateCollisionState();
-	obj2.updateCollisionState();
+	Collidable::updateCollisionState();
 	bool is_enter = obj1.isCollisionEnter();
 	bool is_update = obj1.isCollisionUpdate();
 	bool is_end = obj1.isCollisionEnd();

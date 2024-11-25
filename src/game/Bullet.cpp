@@ -7,7 +7,8 @@
  * Construct a Bullet object with the image set to the contents of Bullet::texture
  */
 Bullet::Bullet(const Gun *gun)
-	: sprite(*texture), author(gun)
+	: sprite(*texture),
+	  author(gun)
 {
 	setOrigin(rn::Vec2f{ texture->getSize() / 2u });
 	updateCollider();
@@ -19,7 +20,6 @@ void Bullet::update()
 	velocity += acceleration;
 	acceleration *= 0.99f;
 	move(direction * velocity);
-	updateCollisionState();
 }
 void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
@@ -103,9 +103,22 @@ const Collider *Bullet::getCollider() const
 
 bool Bullet::resolve(const Collidable *collidable) const
 {
-	return !dynamic_cast<const Bullet *>(collidable) && (!gun || dynamic_cast<const AbstractShip *>(collidable) != gun->user);
+	return dynamic_cast<const Hittable *>(collidable)
+		   && (!gun || dynamic_cast<const AbstractShip *>(collidable) != gun->user);
 }
 const sf::Sprite &Bullet::getSprite() const
 {
 	return sprite;
+}
+void Bullet::destroy() const
+{
+	const_cast<Gun *>(author)->destroy(this);
+}
+void Bullet::onCollisionEnter(Collidable *collidable)
+{
+	std::cout << "I'm a bullet\n"; // TODO: remove
+	if (auto dd = dynamic_cast<Hittable *>(collidable))
+	{
+		destroy();
+	}
 }

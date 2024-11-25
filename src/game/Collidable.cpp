@@ -33,42 +33,54 @@ Collidable::Collidable()
 
 void Collidable::updateCollisionState()
 {
-	std::vector<Collidable *> collisions{};
-	resetCollisionState();
-
 	for (auto &collidable: collidables)
 	{
-		if (!collidable || this == collidable || !resolve(collidable))
+		collidable->collisions_at_state.clear();
+		collidable->resetCollisionState();
+		for (auto &obstacle: collidables)
 		{
-			continue;
-		}
-		if (auto el = dynamic_cast<const EllipseCollider *>(getCollider()))
-		{
-			bool collision_state = collidable->getCollider()->collide(*el);
-			setCollisionState(collision_state);
-			if (collision_state || is_collided_before)
-				collisions.push_back(collidable);
-		}
-		else if (auto pl = dynamic_cast<const PolygonCollider *>(getCollider()))
-		{
-			bool collision_state = collidable->getCollider()->collide(*pl);
-			setCollisionState(collision_state);
-			if (collision_state || is_collided_before)
-				collisions.push_back(collidable);
+			collideObjects(collidable, obstacle);
 		}
 	}
-	for (auto &collision: collisions)
+	for (auto &collidable: collidables)
 	{
-		if (isCollisionEnter())
-			onCollisionEnter(collision);
-		else if (isCollisionUpdate())
-			onCollisionUpdate(collision);
-		else if (isCollisionEnd())
-			onCollisionEnd(collision);
+		for (auto &collision: collidable->collisions_at_state)
+		{
+			if (collidable->isCollisionEnter())
+				collidable->onCollisionEnter(collision);
+			else if (collidable->isCollisionUpdate())
+				collidable->onCollisionUpdate(collision);
+			else if (collidable->isCollisionEnd())
+				collidable->onCollisionEnd(collision);
+		}
 	}
 }
 void Collidable::resetCollisionState()
 {
 	is_collided_before = is_collide;
-	is_collide = false;
+	is_collide		   = false;
+}
+bool Collidable::collideObjects(Collidable *collidable, Collidable *obstacle)
+{
+	if (obstacle == collidable || !obstacle->resolve(collidable))
+	{
+		return false;
+	}
+	if (auto el = dynamic_cast<const EllipseCollider *>(obstacle->getCollider()))
+	{
+		bool collision_state = collidable->getCollider()->collide(*el);
+		obstacle->setCollisionState(collision_state);
+		if (collision_state || obstacle->is_collided_before)
+			obstacle->collisions_at_state.push_back(collidable);
+		return true;
+	}
+	else if (auto pl = dynamic_cast<const PolygonCollider *>(obstacle->getCollider()))
+	{
+		bool collision_state = collidable->getCollider()->collide(*pl);
+		obstacle->setCollisionState(collision_state);
+		if (collision_state || obstacle->is_collided_before)
+			obstacle->collisions_at_state.push_back(collidable);
+		return true;
+	}
+	return false;
 }

@@ -1,15 +1,13 @@
 #include <RuneEngine/Engine.hpp>
 
 #include "AudioMenu.hpp"
-#include "ChatSocket.hpp"
-#include "Client.hpp"
-#include "Server.hpp"
 
 
 int main()
 {
+	auto resolution = rn::VideoSettings::getResolution();
 	sf::RenderWindow window{
-		{ 1920, 1080 },
+		{ resolution.x, resolution.y },
 		"window"
 	};
 

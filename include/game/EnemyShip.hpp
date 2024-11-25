@@ -12,5 +12,5 @@ public:
 	EnemyShip();
 	~EnemyShip() override = default;
 	void onMove() override;
-	void update() override;
+	void onHit() override;
 };

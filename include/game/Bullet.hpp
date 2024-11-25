@@ -38,7 +38,9 @@ public:
 	float getVelocity() const;
 	float getAcceleration() const;
 	rn::Vec2f getSize() const;
+	void destroy() const;
 	bool isIntersected(const rn::Vec2f &point) const override;
+	void onCollisionEnter(Collidable *collidable) override;
 	const Collider *getCollider() const override;
 	/**
 	 * \brief Resolves a collision between this Bullet and the given Collidable.

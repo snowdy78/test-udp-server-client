@@ -31,7 +31,7 @@ protected:
 	{
 		sound.setDisperseRadius(radius);
 	}
-	
+	friend class Bullet;
 public:
 	const AbstractShip *const &user = ship;
 	Gun(const AbstractShip *user, const sf::SoundBuffer *buffer = nullptr);

@@ -64,8 +64,8 @@ void Ship::onRotation()
 	AbstractShip::onRotation();
 	updateCollider();
 }
-void Ship::update()
+void Ship::onHit() 
 {
-	AbstractShip::update();
-	updateCollisionState();
+	AbstractShip::onHit();
+	std::cout << "I'm a ship!\n"; // TODO: remove
 }

@@ -13,7 +13,8 @@ void EnemyShip::onMove()
 	AbstractShip::onMove();
 	updateCollider();
 }
-void EnemyShip::update()
+void EnemyShip::onHit()
 {
-	updateCollisionState();
+	AbstractShip::onHit();
+	std::cout << "I'm a enemy ship!\n"; // TODO remove
 }
