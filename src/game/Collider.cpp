@@ -41,3 +41,11 @@ bool EllipseCollider::collide(const EllipseCollider &collider) const
 	circle.setPointCount(25);
 	return rn::math::polygon(circle).collide(static_cast<const rn::math::ellipce &>(collider.getColliderShape()));
 }
+Collider *PolygonCollider::copy() const
+{
+	return new PolygonCollider(shape);
+}
+Collider *EllipseCollider::copy() const
+{
+	return new EllipseCollider(shape);
+}

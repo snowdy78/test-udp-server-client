@@ -1,10 +1,8 @@
 #include "game/Collidable.hpp"
-#include "game/Bullet.hpp" // TODO : remove
 
-void Collidable::setCollisionExist(bool value)
+void Collidable::setCollisionState(bool value)
 {
-	is_collided_before = is_collide;
-	is_collide		   = is_collide || value;
+	is_collide = is_collide || value;
 }
 bool Collidable::isCollisionEnter() const
 {
@@ -47,15 +45,15 @@ void Collidable::updateCollisionState()
 		if (auto el = dynamic_cast<const EllipseCollider *>(getCollider()))
 		{
 			bool collision_state = collidable->getCollider()->collide(*el);
-			setCollisionExist(collision_state);
-			if (collision_state)
+			setCollisionState(collision_state);
+			if (collision_state || is_collided_before)
 				collisions.push_back(collidable);
 		}
 		else if (auto pl = dynamic_cast<const PolygonCollider *>(getCollider()))
 		{
 			bool collision_state = collidable->getCollider()->collide(*pl);
-			setCollisionExist(collision_state);
-			if (collision_state)
+			setCollisionState(collision_state);
+			if (collision_state || is_collided_before)
 				collisions.push_back(collidable);
 		}
 	}
@@ -71,6 +69,6 @@ void Collidable::updateCollisionState()
 }
 void Collidable::resetCollisionState()
 {
-	is_collided_before = false;
+	is_collided_before = is_collide;
 	is_collide = false;
 }

@@ -5,3 +5,5 @@
 /bin/*.dll
 /bin/*.exe
 /bin/src/
+bin/Testing
+bin/test

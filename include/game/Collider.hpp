@@ -9,6 +9,7 @@ protected:
 public:
 	virtual bool collide(const PolygonCollider &collider) const = 0;
 	virtual bool collide(const EllipseCollider &collider) const = 0;
+	virtual Collider *copy() const = 0;
 	// TODO add collider bounds
 };
 class PolygonCollider : public Collider
@@ -23,6 +24,7 @@ public:
 	virtual bool collide(const EllipseCollider &collider) const override;
 	void transform(rn::math::polygon polygon);
 	const rn::math::shape &getColliderShape() const override;
+	Collider *copy() const override;
 };
 class EllipseCollider : public Collider
 {
@@ -35,4 +37,5 @@ public:
 	virtual bool collide(const PolygonCollider &collider) const override;
 	virtual bool collide(const EllipseCollider &collider) const override;
 	const rn::math::shape &getColliderShape() const override;
+	Collider *copy() const override;
 };
