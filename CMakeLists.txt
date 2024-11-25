@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(MyProject LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin)
 set(MY_PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 set(MY_PROJECT_BINARY_DIR ${PROJECT_BINARY_DIR})
 
@@ -11,7 +12,6 @@ FetchContent_Declare(RuneEngine
     GIT_REPOSITORY https://github.com/snowdy78/cmake-rune-engine.git
     GIT_TAG 0.1.9)
 FetchContent_MakeAvailable(RuneEngine)
-
 file(
     GLOB_RECURSE
     PROJECT_SOURCE_FILES
