@@ -5,11 +5,10 @@
 
 class Collidable
 {
-protected:
 	inline static std::vector<Collidable *> collidables{};
 	bool is_collide			= false;
 	bool is_collided_before = false;
-	void setCollisionExist(bool value);
+	void setCollisionState(bool value);
 	void resetCollisionState();
 
 public:

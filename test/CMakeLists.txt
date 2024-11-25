@@ -13,26 +13,33 @@ include(Catch)
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 set(CMAKE_CATCH_DISCOVER_TESTS_DISCOVERY_MODE PRE_TEST)
-set(TEST_BUILD_DIR ${CMAKE_BINARY_DIR}/test/)
 
-file(GLOB_RECURSE
-    PROJECT_TEST_FILES
-    ${PROJECT_SOURCE_DIR}/test/*.cpp)
-target_include_directories(
-    ${PROJECT_LIBRARY_NAME}
-    PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
-)
-add_executable(tests ${PROJECT_TEST_FILES})
-target_link_libraries(tests PUBLIC RuneEngine)
-target_link_libraries(tests PUBLIC Catch2::Catch2WithMain)
-target_link_libraries(tests PRIVATE ${PROJECT_LIBRARY_NAME})
-target_link_sfml_libraries(tests)
-target_include_directories(
-    tests
-    PRIVATE
-    ${PROJECT_SOURCE_DIR}/include
-)
+function(link_target_test TARGET)
+    target_include_directories(
+        ${TARGET}
+        PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+    )
+    target_link_libraries(${TARGET} PUBLIC RuneEngine)
+    target_link_libraries(${TARGET} PUBLIC Catch2::Catch2WithMain)
+    target_link_libraries(${TARGET} PRIVATE ${PROJECT_LIBRARY_NAME})
+    target_link_sfml_libraries(${TARGET})
+endfunction()
 
-add_test(NAME project_tests COMMAND tests)
-catch_discover_tests(tests)
+function(add_catch2_test TARGET)
+
+    set_target_properties(${TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/test)
+    set_target_properties(${TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/bin/test)
+    set_target_properties(${TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin/test)
+
+    link_target_test(${TARGET})
+
+    add_test(NAME project_tests COMMAND ${TARGET})
+    catch_discover_tests(${TARGET})
+endfunction()
+
+add_executable(main_test ${PROJECT_SOURCE_DIR}/test/main.cpp)
+
+add_catch2_test(main_test)
+
+add_subdirectory(Collision)
