@@ -1,22 +1,42 @@
 #pragma once
 
+#include <type_traits>
 #include "AbstractShip.hpp"
 #include "decl.hpp"
 
+template<class T>
+concept ShipT = std::is_base_of<AbstractShip, T>::value && !std::is_same<T, AbstractShip>::value;
 
-class SpaceField
+class SpaceField : public sf::Drawable, public rn::LogicalObject
 {
 	std::vector<AbstractShip *> ships{};
 
 public:
-	SpaceField() {}
+	SpaceField();
+	SpaceField(const SpaceField &field);
+	SpaceField(SpaceField &&) noexcept = default;
+	~SpaceField();
 
-	void append(AbstractShip *ship)
-	{
-		ships.push_back(ship);
-	}
+	void start() override;
+	void update() override;
+	void onEvent(sf::Event &event) override;
 
-	void remove(AbstractShip *ship) {
-        ships.erase(std::remove(ships.begin(), ships.end(), ship), ships.end());
-    }
+	AbstractShip *get(size_t index);
+	AbstractShip *operator[](size_t index);
+
+	template<ShipT T>
+	void append();
+
+	void remove(AbstractShip *ship);
+
+	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+	SpaceField &operator=(const SpaceField &other);
+	SpaceField &operator=(SpaceField &&other) noexcept;
 };
+
+
+template<ShipT T>
+void SpaceField::append()
+{
+	ships.push_back(new T());
+}

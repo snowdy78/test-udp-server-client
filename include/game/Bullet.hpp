@@ -3,6 +3,7 @@
 #include "Collidable.hpp"
 #include "DamageDealer.hpp"
 #include "decl.hpp"
+#include "game/colliders/EllipseCollider.hpp"
 
 class Bullet : public rn::MonoBehaviour, public Collidable, virtual public DamageDealer
 {

@@ -16,3 +16,8 @@ void EnemyShip::onHit()
 {
 	AbstractShip::onHit();
 }
+
+AbstractShip *EnemyShip::copy() const
+{
+	return new EnemyShip();
+}

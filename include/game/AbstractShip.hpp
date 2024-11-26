@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Collidable.hpp"
 #include "Hittable.hpp"
 #include "RigitBody2d.hpp"
-#include "Collidable.hpp"
 #include "decl.hpp"
 #include "game/Gun.hpp"
-
+#include "game/colliders/PolygonCollider.hpp"
 
 class AbstractShip : public RigitBody2d, public Collidable, public Hittable
 {
@@ -14,7 +14,8 @@ protected:
 	sf::Sprite sprite;
 	void updateGunPosition();
 	void updateCollider();
-	PolygonCollider collider;
+	EllipseCollider collider;
+
 public:
 	AbstractShip(const sf::Texture &texture);
 	void setGun(const Gun &gun);
@@ -40,4 +41,5 @@ public:
 	void onHit() override;
 	bool resolve(const Collidable *collidable) const override;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+	virtual AbstractShip *copy() const = 0;
 };

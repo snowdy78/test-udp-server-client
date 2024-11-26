@@ -68,3 +68,7 @@ void Ship::onHit()
 {
 	AbstractShip::onHit();
 }
+AbstractShip *Ship::copy() const
+{
+	return new Ship();
+}

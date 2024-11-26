@@ -1,4 +1,5 @@
 #include "game/AbstractShip.hpp"
+#include "RuneEngine/EngineDecl.hpp"
 #include "game/Gun.hpp"
 #include "game/RigitBody2d.hpp"
 
@@ -77,9 +78,12 @@ void AbstractShip::onMove()
 {
 	updateGunPosition();
 	updateCollider();
-	health_bar.setPosition(getPosition() + rn::Vec2f{ 0, getSize().y });
+	health_bar.setPosition(getPosition() - getOrigin() + rn::Vec2f{ 0, getSize().y });
 }
-void AbstractShip::onRotation() {}
+void AbstractShip::onRotation()
+{
+	updateCollider();
+}
 const sf::Sprite &AbstractShip::getSprite() const
 {
 	return sprite;
@@ -95,7 +99,12 @@ const Collider *AbstractShip::getCollider() const
 }
 void AbstractShip::updateCollider()
 {
-	collider.transform(rn::math::rectangle(getGlobalBounds()));
+	rn::Circle circle{ getSize().x / 2.f };
+	circle.setPosition(getPosition());
+	circle.setOrigin(getOrigin());
+	circle.setRotation(getRotation());
+	circle.setScale(getScale());
+	collider.transform(rn::math::ellipce(circle));
 }
 bool AbstractShip::resolve(const Collidable *collidable) const
 {
@@ -111,3 +120,4 @@ void AbstractShip::onCollisionEnter(Collidable *collidable)
 		takeDamage(dd->getDamage());
 	}
 }
+void AbstractShip::onHit() {}

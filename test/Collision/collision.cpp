@@ -2,6 +2,8 @@
 #include <memory>
 #include "game/Collidable.hpp"
 #include "game/Collider.hpp"
+#include "game/colliders/EllipseCollider.hpp"
+#include "game/colliders/PolygonCollider.hpp"
 
 class MyCollidable : public Collidable
 {
@@ -35,31 +37,36 @@ public:
 		return collider.get();
 	}
 };
-enum CollisionState {
-	Enter, Update, End, None
+enum CollisionState
+{
+	Enter,
+	Update,
+	End,
+	None
 };
 void requireCollisionState(MyCollidable &obj1, MyCollidable &obj2, CollisionState state)
 {
 	Collidable::updateCollisionState();
-	bool is_enter = obj1.isCollisionEnter();
-	bool is_update = obj1.isCollisionUpdate();
-	bool is_end = obj1.isCollisionEnd();
-	bool need_enter = is_enter && !is_update && !is_end;
+	bool is_enter	 = obj1.isCollisionEnter();
+	bool is_update	 = obj1.isCollisionUpdate();
+	bool is_end		 = obj1.isCollisionEnd();
+	bool need_enter	 = is_enter && !is_update && !is_end;
 	bool need_update = !is_enter && is_update && !is_end;
-	bool need_end = !is_enter && !is_update && is_end;
-	bool need_none = !is_enter && !is_update && !is_end;
-	switch (state) {
+	bool need_end	 = !is_enter && !is_update && is_end;
+	bool need_none	 = !is_enter && !is_update && !is_end;
+	switch (state)
+	{
 		case Enter:
-			REQUIRE( need_enter == true );
+			REQUIRE(need_enter == true);
 			break;
 		case Update:
-			REQUIRE( need_update == true );
+			REQUIRE(need_update == true);
 			break;
 		case End:
-			REQUIRE( need_end == true );
+			REQUIRE(need_end == true);
 			break;
 		case None:
-			REQUIRE( need_none == true );
+			REQUIRE(need_none == true);
 			break;
 	}
 }
@@ -68,9 +75,6 @@ TEST_CASE("collision state test", "[single-file]")
 	std::vector<std::shared_ptr<Collider>> colliders{ std::make_shared<EllipseCollider>(),
 													  std::make_shared<PolygonCollider>() };
 
-
-	
-
 	for (auto &collider1: colliders)
 	{
 		MyCollidable obj1(collider1.get());
@@ -78,7 +82,7 @@ TEST_CASE("collision state test", "[single-file]")
 		for (auto &collider2: colliders)
 		{
 			MyCollidable obj2(collider2.get());
-			const char *value1 = collider1 == colliders[0] ? "ellipse" : "polygon"; 
+			const char *value1 = collider1 == colliders[0] ? "ellipse" : "polygon";
 			const char *value2 = collider2 == colliders[0] ? "ellipse" : "polygon";
 			CAPTURE(value1);
 			CAPTURE(value2);
@@ -95,10 +99,10 @@ TEST_CASE("collision state test", "[single-file]")
 			requireCollisionState(obj1, obj2, Update);
 
 			obj2.set(200, 200, 20);
-			
+
 			requireCollisionState(obj1, obj2, End);
 
-			
+
 			requireCollisionState(obj1, obj2, None);
 		}
 	}

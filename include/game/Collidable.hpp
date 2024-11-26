@@ -10,7 +10,7 @@ class Collidable
 	bool is_collided_before = false;
 	std::vector<Collidable *> collisions_at_state{};
 	void setCollisionState(bool value);
-	static bool collideObjects(Collidable *collidable, Collidable *obstacle);
+	static void collideObjects(Collidable *collidable, Collidable *obstacle);
 	void resetCollisionState();
 	static void updateState(Collidable *collidable, Collidable *obstacle);
 
