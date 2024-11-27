@@ -38,5 +38,7 @@ public:
 template<ShipT T>
 void SpaceField::append()
 {
-	ships.push_back(new T());
+	T *ship = new T();
+	ship->setField(this);
+	ships.push_back(ship);
 }

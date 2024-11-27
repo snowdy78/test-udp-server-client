@@ -2,6 +2,7 @@
 #include "RuneEngine/EngineDecl.hpp"
 #include "game/Gun.hpp"
 #include "game/RigitBody2d.hpp"
+#include "game/SpaceField.hpp"
 
 
 AbstractShip::AbstractShip(const sf::Texture &texture)
@@ -123,4 +124,16 @@ void AbstractShip::onCollisionEnter(Collidable *collidable)
 void AbstractShip::onHit()
 {
 	Hittable::onHit();
+	if (getHealth() <= 0 && field)
+	{
+		field->remove(this);
+	}
+}
+bool AbstractShip::isDead() const
+{
+	return is_dead;
+}
+void AbstractShip::setField(SpaceField *field)
+{
+	this->field = field;
 }

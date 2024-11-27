@@ -5,16 +5,21 @@
 #include "RigitBody2d.hpp"
 #include "decl.hpp"
 #include "game/Gun.hpp"
-#include "game/colliders/PolygonCollider.hpp"
+#include "game/colliders/EllipseCollider.hpp"
 
 class AbstractShip : public RigitBody2d, public Collidable, public Hittable
 {
+	friend class SpaceField;
 protected:
 	std::unique_ptr<Gun> gun = nullptr;
 	sf::Sprite sprite;
 	void updateGunPosition();
 	void updateCollider();
 	EllipseCollider collider;
+	SpaceField *field = nullptr;
+	bool is_dead	  = false;
+	void setField(SpaceField *field);
+
 
 public:
 	AbstractShip(const sf::Texture &texture);
@@ -32,6 +37,7 @@ public:
 	void update() override;
 	void onEvent(sf::Event &event) override;
 	void onMove() override;
+	bool isDead() const;
 	void onRotation() override;
 	void onCollisionEnter(Collidable *collidable) override;
 	sf::FloatRect getLocalBounds() const;

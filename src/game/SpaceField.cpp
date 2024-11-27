@@ -20,7 +20,12 @@ SpaceField::~SpaceField()
 
 void SpaceField::remove(AbstractShip *ship)
 {
-	ships.erase(std::remove(ships.begin(), ships.end(), ship), ships.end());
+	auto it = std::find(ships.begin(), ships.end(), ship);
+	if (it != ships.end())
+	{
+		delete *it;
+		ships.erase(it);
+	}
 }
 AbstractShip *SpaceField::get(size_t index)
 {
