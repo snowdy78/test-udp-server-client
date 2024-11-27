@@ -6,7 +6,9 @@
 
 AudioMenu::AudioMenu(sf::RenderWindow &window)
 	: MenuBranch(window)
-{}
+{
+	th.reset(new sf::Thread([this]() { updateObjectsState(); }));
+}
 
 void AudioMenu::start()
 {
@@ -23,13 +25,13 @@ void AudioMenu::start()
 void AudioMenu::update()
 {
 	window.clear();
-	field.update();
+	th->launch();
 	shader.load("space.frag", sf::Shader::Fragment);
-
 	shader.setUniform("iResolution", rn::Vec2f(res));
-	shader.setUniform<float>("iTime", clock.getElapsedTime().asMilliseconds()/1000.f);
-	Collidable::updateCollisionState();
-	
+	shader.setUniform("iTime", clock.getElapsedTime().asMilliseconds() / 1000.f);
+	shader.setUniform("iPosition", field[0]->getPosition());
+	shader.render();
+	th->wait();
 	window.draw(shader);
 	window.draw(field);
 	window.display();
@@ -40,6 +42,12 @@ void AudioMenu::onEvent(sf::Event &event)
 	field.onEvent(event);
 	if (event.type == sf::Event::Closed)
 	{
+		delete th.release();
 		window.close();
 	}
+}
+void AudioMenu::updateObjectsState()
+{
+	field.update();
+	Collidable::updateCollisionState();
 }

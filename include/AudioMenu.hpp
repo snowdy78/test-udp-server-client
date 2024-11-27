@@ -10,12 +10,15 @@ class AudioMenu : public rn::MenuBranch
 {
 	rn::Vec2u res = rn::VideoSettings::getResolution();
 	SpaceField field;
+	std::unique_ptr<sf::Thread> th;
+	sf::Mutex mutex;
 	sf::Clock clock;
 	rn::ShaderTexture shader{ res, "space.frag", sf::Shader::Fragment };
 public:
 	explicit AudioMenu(sf::RenderWindow &window);
 
 	void start() override;
+	void updateObjectsState();
 	void update() override;
 	void onEvent(sf::Event &event) override;
 };
