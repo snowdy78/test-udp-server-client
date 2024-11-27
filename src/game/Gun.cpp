@@ -34,10 +34,12 @@ Gun::Gun(const AbstractShip *user, const sf::SoundBuffer *buffer)
 
 void Gun::shoot(const rn::Vec2f &direction)
 {
-	if (ship)
+	if (ship && !has_rollback)
 	{
 		summon(createBullet(), rn::math::norm(getTrajectory()));
 		sound.play();
+		has_rollback = true;
+		clock.start();
 	}
 }
 
@@ -58,5 +60,5 @@ void Gun::update()
 
 float Gun::getMillisDelay() const
 {
-	return 300.f;
+	return 0.3f;
 }
