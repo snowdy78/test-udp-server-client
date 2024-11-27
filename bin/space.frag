@@ -13,27 +13,19 @@ float rand(in vec2 st)
 float p(in vec2 st)
 {
 	float r = rand(floor(st));
-	return 0.01 + smoothstep(0.995, 1.0, r) * max(0.0, sin(r * 34433.0 + iTime));
-}
-
-const vec3 blue = vec3(0.0, 0.1, 0.2);
-
-vec3 avg(in vec2 st, in float a)
-{
-	vec2 A = vec2(0.0, a);
-	return blue * (p(st) + p(st + A) + p(st + A.yx) + p(st - A) + p(st - A.yx));
+	return 0.01 + smoothstep(0.995, 1.0, r) * max(0.0, sin(r * 33333.0 + iTime));
 }
 
 vec3 stars(in vec2 st)
 {
-	vec3 color = vec3(0.0);
+	vec3 color = vec3(0.0, 0.0, 0.02);
 	return color + p(st);
 }
 
 void main()
 {
 	vec2 uv = (gl_FragCoord.xy + iPosition.xy) / min(iResolution.y, iResolution.x);
-	uv *= 150.0;
+	uv *= 1000.0;
 
 	vec3 color = stars(uv);
 
