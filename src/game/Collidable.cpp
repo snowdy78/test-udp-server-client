@@ -44,10 +44,9 @@ void Collidable::updateCollisionState()
 			collideObjects(collidable, obstacle);
 		}
 	}
-
-	for (auto &collidable: collidables)
+	for (auto &collidable : collidables)
 	{
-		for (auto &collision: collidable->collisions_at_state)
+		for (auto &collision : collidable->collisions_at_state)
 		{
 			updateState(collidable, collision);
 		}
@@ -60,7 +59,7 @@ void Collidable::resetCollisionState()
 }
 void Collidable::collideObjects(Collidable *collidable, Collidable *obstacle)
 {
-	
+
 	auto el = dynamic_cast<const EllipseCollider *>(obstacle->getCollider());
 	auto pl = dynamic_cast<const PolygonCollider *>(obstacle->getCollider());
 	if (obstacle == collidable || !collidable->resolve(obstacle) || !el && !pl)

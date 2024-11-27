@@ -8,5 +8,5 @@ sf::SoundBuffer loadSound(const sf::String &file_name)
         std::cerr << "Failed to load sound file 'shoot.ogg'" << std::endl;
         throw std::exception();
     }
-    return sound_buffer;
+    return std::move(sound_buffer);
 }

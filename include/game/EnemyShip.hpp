@@ -11,6 +11,8 @@ class EnemyShip : public AbstractShip
 public:
 	EnemyShip();
 	~EnemyShip() override = default;
+	void movement() override;
+	void rotation() override;
 	void onMove() override;
 	void onHit() override;
 	AbstractShip *copy() const override;

@@ -117,9 +117,9 @@ void Bullet::destroy() const
 		const_cast<Gun *>(author)->destroy(this);
 	}
 }
-void Bullet::onCollisionEnter(Collidable *collidable)
+void Bullet::onCollisionEnter(Collidable *obstacle)
 {
-	if (auto dd = dynamic_cast<Hittable *>(collidable))
+	if (auto hittable = dynamic_cast<Hittable *>(obstacle))
 	{
 		destroy();
 	}

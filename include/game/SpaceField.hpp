@@ -12,6 +12,9 @@ class SpaceField : public sf::Drawable, public rn::LogicalObject
 	std::vector<AbstractShip *> ships{};
 
 public:
+	using iterator = std::vector<AbstractShip *>::iterator;
+	using const_iterator = std::vector<AbstractShip *>::const_iterator;
+
 	SpaceField();
 	SpaceField(const SpaceField &field);
 	SpaceField(SpaceField &&) noexcept = default;
@@ -23,6 +26,15 @@ public:
 
 	AbstractShip *get(size_t index);
 	AbstractShip *operator[](size_t index);
+	iterator begin();
+	iterator end();
+	size_t size();
+
+	const_iterator cbegin() const;
+	const_iterator cend() const;
+	const_iterator begin() const;
+	const_iterator end() const;
+	void clear();
 
 	template<ShipT T>
 	void append();

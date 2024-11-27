@@ -87,3 +87,42 @@ SpaceField &SpaceField::operator=(SpaceField &&other) noexcept
 	}
 	return *this;
 }
+SpaceField::iterator SpaceField::begin()
+{
+	return ships.begin();
+}
+SpaceField::iterator SpaceField::end()
+{
+	return ships.end();
+}
+size_t SpaceField::size()
+{
+	return ships.size();
+}
+SpaceField::const_iterator SpaceField::cbegin() const
+{
+	return ships.cbegin();
+}
+SpaceField::const_iterator SpaceField::cend() const
+{
+	return ships.cend();
+}
+
+SpaceField::const_iterator SpaceField::begin() const
+{
+	return ships.begin();
+}
+
+SpaceField::const_iterator SpaceField::end() const
+{
+	return ships.end();
+}
+
+void SpaceField::clear()
+{
+	for (auto &ship: ships)
+	{
+		delete ship;
+	}
+	ships.clear();
+}

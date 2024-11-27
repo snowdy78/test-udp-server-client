@@ -7,7 +7,7 @@
 AbstractShip::AbstractShip(const sf::Texture &texture)
 	: sprite(texture)
 {
-	sound.setBuffer(hit_buffer);
+	hit_sound.setBuffer(hit_buffer);
 }
 rn::Vec2f AbstractShip::getSize() const
 {
@@ -133,11 +133,11 @@ void AbstractShip::onCollisionEnter(Collidable *collidable)
 void AbstractShip::onHit()
 {
 	Hittable::onHit();
+	hit_sound.play();
 	if (getHealth() <= 0 && field)
 	{
 		field->remove(this);
 	}
-	sound.play();
 }
 bool AbstractShip::isDead() const
 {

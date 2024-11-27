@@ -23,7 +23,7 @@ protected:
 	bool accelerated = getVelocity() + 0.3f;
 
 	inline static sf::SoundBuffer hit_buffer = loadSound("hit.ogg");
-	SoundDisperseEntity sound{ 20.f, 100.f };
+	SoundDisperseEntity hit_sound{ 20.f, 100.f };
 
 public:
 	AbstractShip(const sf::Texture &texture);
