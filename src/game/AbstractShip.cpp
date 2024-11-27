@@ -25,9 +25,7 @@ void AbstractShip::setGun(const Gun &gun)
 void AbstractShip::shoot()
 {
 	if (!gun)
-	{
 		return;
-	}
 	gun->shoot(getDirection());
 }
 sf::FloatRect AbstractShip::getLocalBounds() const
@@ -62,10 +60,7 @@ void AbstractShip::onEvent(sf::Event &event)
 	{
 		gun->onEvent(event);
 	}
-	if (rn::isKeydown(sf::Mouse::Left))
-	{
-		shoot();
-	}
+
 	if (rn::isKeydown(sf::Keyboard::LShift))
 	{
 		setVelocity(accelerated);

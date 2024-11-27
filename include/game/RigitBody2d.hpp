@@ -30,7 +30,6 @@ class RigitBody2d : public rn::MonoBehaviour
 {
 	float velocity = 0.3f;
 	Direction direction{};
-	rn::Vec2f countDirection() const;
 	bool is_capable = true;
 public:
 	using Transformable::getPosition;

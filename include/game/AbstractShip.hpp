@@ -3,6 +3,7 @@
 #include "Collidable.hpp"
 #include "Hittable.hpp"
 #include "RigitBody2d.hpp"
+#include "SoundDisperseEntity.hpp"
 #include "decl.hpp"
 #include "game/Gun.hpp"
 #include "game/colliders/EllipseCollider.hpp"
