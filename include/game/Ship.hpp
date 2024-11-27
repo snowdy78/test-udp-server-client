@@ -4,7 +4,6 @@
 #include "decl.hpp"
 
 
-
 class Ship : public AbstractShip
 {
 	inline static rn::StaticTexture texture = rn::StaticTexture("img/ship.png");
@@ -21,6 +20,7 @@ public:
 	void rotation() override;
 	void movement() override;
 	void onMove() override;
+	void onEvent(sf::Event &event) override;
 	void onRotation() override;
 	void onHit() override;
 	AbstractShip *copy() const override;
