@@ -1,10 +1,19 @@
 #include "game/EnemyShip.hpp"
 #include "game/AbstractShip.hpp"
-#include "game/SpaceField.hpp"
 
 EnemyShip::EnemyShip()
 	: AbstractShip(*texture)
 {}
+
+void EnemyShip::setTarget(AbstractShip *ship)
+{
+	target = ship;
+}
+
+const AbstractShip *EnemyShip::getTarget() const
+{
+	return target;
+}
 
 
 void EnemyShip::onMove()
@@ -24,20 +33,10 @@ AbstractShip *EnemyShip::copy() const
 void EnemyShip::rotation()
 {
 	AbstractShip::rotation();
-	if (field)
+	if (target)
 	{
-		rn::math::point_array points;
-		for (auto &ship: *field)
-		{
-			if (ship != this)
-				points.push_back(ship->getPosition());
-		}
-		if (points.empty())
-			return;
-		rn::math::intersection_t arr{ points.begin(), points.end() };
-		rn::Vec2f nearest = arr.nearest(getPosition());
-		setDirection(rn::math::norm(nearest - getPosition()));
-		setRotation(rn::math::rot(nearest - getPosition()));
+		setDirection(target->getPosition() - getPosition());
+		setRotation(rn::math::rot(getDirection()));
 	}
 }
 void EnemyShip::movement()

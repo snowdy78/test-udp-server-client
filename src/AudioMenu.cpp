@@ -1,7 +1,7 @@
 #include "AudioMenu.hpp"
+#include "RuneEngine/SettingsFile.hpp"
 #include "game/EnemyShip.hpp"
 #include "game/Ship.hpp"
-#include "game/guns/Pistol.hpp"
 
 
 AudioMenu::AudioMenu(sf::RenderWindow &window)
@@ -16,10 +16,12 @@ void AudioMenu::start()
 {
 	field.append<Ship>();
 	field.append<EnemyShip>();
-	auto player = field[0];
-	auto enemy	= field[1];
+	player = field[0];
 	player->setPosition(500, 500);
-	enemy->setPosition(400, 400);
+	summonShip();
+	shader.load("space.frag", sf::Shader::Fragment);
+	shader.setUniform("iResolution", rn::Vec2f(res));
+
 	field.start();
 }
 
@@ -27,10 +29,11 @@ void AudioMenu::update()
 {
 	window.clear();
 	th->launch();
-	shader.load("space.frag", sf::Shader::Fragment);
-	shader.setUniform("iResolution", rn::Vec2f(res));
 	shader.setUniform("iTime", clock.getElapsedTime().asMilliseconds() / 1000.f);
-	shader.setUniform("iPosition", field[0]->getPosition());
+	if (player)
+	{
+		shader.setUniform("iPosition", player->getPosition());
+	}
 	shader.render();
 	th->wait();
 	window.draw(shader);
@@ -53,7 +56,7 @@ void AudioMenu::onEvent(sf::Event &event)
 	{
 		if (rn::isKeydown(sf::Keyboard::P))
 		{
-			field.append<EnemyShip>();
+			summonShip();
 		}
 	}
 }
@@ -65,4 +68,16 @@ void AudioMenu::updateObjectsState()
 	}
 	field.update();
 	Collidable::updateCollisionState();
+}
+
+void AudioMenu::summonShip()
+{
+	auto res = rn::Vec2f(rn::VideoSettings::getResolution());
+	field.append<EnemyShip>();
+	auto ship = dynamic_cast<EnemyShip *>(field[field.size() - 1]);
+	if (ship)
+	{
+		ship->setTarget(player);
+		ship->setPosition(rn::random::real(0.f, 1.f) * res.x, rn::random::real(0.f, 1.f) * res.y);
+	}
 }
