@@ -1,4 +1,5 @@
 #include "game/Collidable.hpp"
+#include "SFML/Graphics/Transformable.hpp"
 #include "game/colliders/EllipseCollider.hpp"
 #include "game/colliders/PolygonCollider.hpp"
 
@@ -60,11 +61,14 @@ void Collidable::resetCollisionState()
 void Collidable::collideObjects(Collidable *collidable, Collidable *obstacle)
 {
 
+	auto p1 = dynamic_cast<sf::Transformable *>(obstacle)->getPosition();
+	auto p2 = dynamic_cast<sf::Transformable *>(collidable)->getPosition();
+	if (rn::math::length(p1 - p2) > min_dist_collision)
+		return;
 	auto el = dynamic_cast<const EllipseCollider *>(obstacle->getCollider());
 	auto pl = dynamic_cast<const PolygonCollider *>(obstacle->getCollider());
 	if (obstacle == collidable || !collidable->resolve(obstacle) || !el && !pl)
 		return;
-
 	bool collision_state = false;
 	if (el)
 		collision_state = collidable->getCollider()->collide(*el);

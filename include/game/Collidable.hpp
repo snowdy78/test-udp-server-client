@@ -6,6 +6,7 @@
 class Collidable
 {
 	inline static std::vector<Collidable *> collidables{};
+	inline static constexpr float min_dist_collision = 100.f;
 	bool is_collide			= false;
 	bool is_collided_before = false;
 	std::vector<Collidable *> collisions_at_state{};
