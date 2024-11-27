@@ -120,4 +120,7 @@ void AbstractShip::onCollisionEnter(Collidable *collidable)
 		takeDamage(dd->getDamage());
 	}
 }
-void AbstractShip::onHit() {}
+void AbstractShip::onHit()
+{
+	Hittable::onHit();
+}
