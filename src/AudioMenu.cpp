@@ -49,6 +49,13 @@ void AudioMenu::onEvent(sf::Event &event)
 		delete th.release();
 		window.close();
 	}
+	if (dev_mode)
+	{
+		if (rn::isKeydown(sf::Keyboard::P))
+		{
+			field.append<EnemyShip>();
+		}
+	}
 }
 void AudioMenu::updateObjectsState()
 {

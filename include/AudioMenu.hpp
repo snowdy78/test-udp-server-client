@@ -14,6 +14,8 @@ class AudioMenu : public rn::MenuBranch
 	sf::Mutex mutex;
 	sf::Clock clock;
 	rn::ShaderTexture shader{ res, "space.frag", sf::Shader::Fragment };
+
+	bool dev_mode = true;
 public:
 	explicit AudioMenu(sf::RenderWindow &window);
 
