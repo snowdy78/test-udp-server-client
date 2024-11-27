@@ -8,26 +8,29 @@
 
 class Gun : public BulletMother, public sf::Drawable
 {
+	rn::Stopwatch clock;
+	bool has_rollback = false;
+
 protected:
+	const AbstractShip *ship;
 	SoundDisperseEntity sound{ 20.f, 100.f };
 
-	const AbstractShip *ship;
+	void setClearSoundDistance(float distance);
+	void setDisperseRadius(float radius);
 
-	void setClearSoundDistance(float distance)
-	{
-		sound.setClearSoundDistance(distance);
-	}
-	void setDisperseRadius(float radius)
-	{
-		sound.setDisperseRadius(radius);
-	}
 	friend class Bullet;
+
+
 public:
 	const AbstractShip *const &user = ship;
 	Gun(const AbstractShip *user, const sf::SoundBuffer *buffer = nullptr);
-	virtual ~Gun()								   = 0;
-	virtual void shoot(const rn::Vec2f &direction) = 0;
-	virtual Bullet *createBullet() const		   = 0;
-	virtual Gun *copy() const					   = 0;
+	virtual ~Gun() = 0;
+	virtual void shoot(const rn::Vec2f &direction);
+	virtual Bullet *createBullet() const = 0;
+	virtual Gun *copy() const			 = 0;
+	virtual rn::Vec2f getTrajectory() const = 0;
+	bool hasRollback() const;
+	void update() override;
+	virtual float getMillisDelay() const;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 };

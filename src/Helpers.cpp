@@ -2,11 +2,23 @@
 
 sf::SoundBuffer loadSound(const sf::String &file_name)
 {
-    sf::SoundBuffer sound_buffer;
-    if (!sound_buffer.loadFromFile(file_name))
-    {
-        std::cerr << "Failed to load sound file 'shoot.ogg'" << std::endl;
-        throw std::exception();
-    }
-    return std::move(sound_buffer);
+	sf::SoundBuffer sound_buffer;
+	if (!sound_buffer.loadFromFile(file_name))
+	{
+		std::cerr << "Failed to load sound file 'shoot.ogg'" << std::endl;
+		throw std::exception();
+	}
+	return std::move(sound_buffer);
+}
+
+bool everyTime(rn::Stopwatch &clock, const float t)
+{
+	if (clock.is_stopped())
+		return false;
+	if (clock.time<std::chrono::milliseconds>().count() % 1000 > t * 1000.f)
+	{
+        clock.stop();
+		return true;
+	}
+    return false;
 }
