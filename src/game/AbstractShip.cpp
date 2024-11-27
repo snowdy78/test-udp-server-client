@@ -2,10 +2,10 @@
 #include "game/Gun.hpp"
 #include "game/RigitBody2d.hpp"
 #include "game/SpaceField.hpp"
-
+#include "game/guns/Pistol.hpp"
 
 AbstractShip::AbstractShip(const sf::Texture &texture)
-	: sprite(texture)
+	: sprite(texture), gun(new Pistol(this))
 {
 	hit_sound.setBuffer(hit_buffer);
 }

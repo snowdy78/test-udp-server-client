@@ -19,7 +19,6 @@ void AudioMenu::start()
 	auto player = field[0];
 	auto enemy	= field[1];
 	player->setPosition(500, 500);
-	player->setGun(Pistol(player));
 	enemy->setPosition(400, 400);
 	field.start();
 }

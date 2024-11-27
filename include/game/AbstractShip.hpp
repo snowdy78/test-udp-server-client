@@ -12,7 +12,7 @@ class AbstractShip : public RigitBody2d, public Collidable, public Hittable
 {
 	friend class SpaceField;
 protected:
-	std::unique_ptr<Gun> gun = nullptr;
+	std::unique_ptr<Gun> gun;
 	sf::Sprite sprite;
 	void updateGunPosition();
 	void updateCollider();
