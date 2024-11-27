@@ -1,5 +1,4 @@
 #include "game/AbstractShip.hpp"
-#include "RuneEngine/EngineDecl.hpp"
 #include "game/Gun.hpp"
 #include "game/RigitBody2d.hpp"
 #include "game/SpaceField.hpp"
@@ -7,7 +6,9 @@
 
 AbstractShip::AbstractShip(const sf::Texture &texture)
 	: sprite(texture)
-{}
+{
+	sound.setBuffer(hit_buffer);
+}
 rn::Vec2f AbstractShip::getSize() const
 {
 	return rn::Vec2f(sprite.getTexture()->getSize());
@@ -64,6 +65,14 @@ void AbstractShip::onEvent(sf::Event &event)
 	if (rn::isKeydown(sf::Mouse::Left))
 	{
 		shoot();
+	}
+	if (rn::isKeydown(sf::Keyboard::LShift))
+	{
+		setVelocity(accelerated);
+	}
+	else if (rn::isKeyup(sf::Keyboard::LShift))
+	{
+		setVelocity(accelerated);
 	}
 }
 void AbstractShip::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -128,6 +137,7 @@ void AbstractShip::onHit()
 	{
 		field->remove(this);
 	}
+	sound.play();
 }
 bool AbstractShip::isDead() const
 {

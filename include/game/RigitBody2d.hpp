@@ -5,8 +5,12 @@
 class Direction : public rn::Vec2f
 {
 public:
-	explicit Direction(const rn::Vec2f &distance = {}) : rn::Vec2f(rn::math::norm(distance)) {}
-	explicit Direction(float angle) : rn::Vec2f{ std::cos(angle), std::sin(angle) } {}
+	explicit Direction(const rn::Vec2f &distance = {})
+		: rn::Vec2f(rn::math::norm(distance))
+	{}
+	explicit Direction(float angle)
+		: rn::Vec2f{ std::cos(angle), std::sin(angle) }
+	{}
 	const rn::Vec2f &toVector() const
 	{
 		return *this;
@@ -27,6 +31,7 @@ class RigitBody2d : public rn::MonoBehaviour
 	float velocity = 0.3f;
 	Direction direction{};
 	rn::Vec2f countDirection() const;
+	bool is_capable = true;
 public:
 	using Transformable::getPosition;
 
@@ -35,10 +40,13 @@ public:
 
 	explicit RigitBody2d();
 
+	bool isCapable() const;
+	void setCapability(bool capability);
 	void setPosition(const rn::Vec2f &p);
 	void setPosition(float x, float y);
 	void setDirection(float x, float y);
 	void setDirection(const rn::Vec2f &p);
+	void setVelocity(float velocity);
 	Direction getDirection() const;
 	void move(float x, float y);
 	void move(const rn::Vec2f &p);

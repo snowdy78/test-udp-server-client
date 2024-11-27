@@ -6,6 +6,7 @@
 #include "decl.hpp"
 #include "game/Gun.hpp"
 #include "game/colliders/EllipseCollider.hpp"
+#include "Helpers.hpp"
 
 class AbstractShip : public RigitBody2d, public Collidable, public Hittable
 {
@@ -19,7 +20,10 @@ protected:
 	SpaceField *field = nullptr;
 	bool is_dead	  = false;
 	void setField(SpaceField *field);
+	bool accelerated = getVelocity() + 0.3f;
 
+	inline static sf::SoundBuffer hit_buffer = loadSound("hit.ogg");
+	SoundDisperseEntity sound{ 20.f, 100.f };
 
 public:
 	AbstractShip(const sf::Texture &texture);

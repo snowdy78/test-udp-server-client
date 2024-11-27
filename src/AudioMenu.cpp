@@ -7,7 +7,9 @@
 AudioMenu::AudioMenu(sf::RenderWindow &window)
 	: MenuBranch(window)
 {
-	th.reset(new sf::Thread([this]() { updateObjectsState(); }));
+	th.reset(new sf::Thread([this]() {
+		updateObjectsState();
+	}));
 }
 
 void AudioMenu::start()
@@ -39,7 +41,10 @@ void AudioMenu::update()
 
 void AudioMenu::onEvent(sf::Event &event)
 {
-	field.onEvent(event);
+	if (window.hasFocus())
+	{
+		field.onEvent(event);
+	}
 	if (event.type == sf::Event::Closed)
 	{
 		delete th.release();
@@ -48,6 +53,10 @@ void AudioMenu::onEvent(sf::Event &event)
 }
 void AudioMenu::updateObjectsState()
 {
+	if (!window.hasFocus())
+	{
+		return;
+	}
 	field.update();
 	Collidable::updateCollisionState();
 }

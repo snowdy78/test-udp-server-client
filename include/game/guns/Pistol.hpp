@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game/Gun.hpp"
+#include "Helpers.hpp"
 
 class Pistol : public Gun
 {

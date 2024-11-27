@@ -33,6 +33,8 @@ void RigitBody2d::move(const rn::Vec2f &p)
 
 void RigitBody2d::update()
 {
+	if (!isCapable()) 
+		return;
 	Direction dir{ countDirection() };
 	setDirection(dir.x, dir.y);
 	movement();
@@ -70,4 +72,16 @@ void RigitBody2d::setDirection(float x, float y)
 Direction RigitBody2d::getDirection() const
 {
 	return direction;
+}
+void RigitBody2d::setVelocity(float velocity)
+{
+	this->velocity = velocity;
+}
+bool RigitBody2d::isCapable() const
+{
+	return is_capable;
+}
+void RigitBody2d::setCapability(bool capability)
+{
+	is_capable = capability;
 }
