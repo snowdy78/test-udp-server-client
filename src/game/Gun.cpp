@@ -31,7 +31,7 @@ void Gun::shoot(const rn::Vec2f &direction)
 {
 	if (ship && ship->field && !has_rollback)
 	{
-		ship->field->summonBullet(createBullet(), rn::math::norm(getTrajectory()));
+		ship->field->summonBullet(createBullet(), getTrajectory());
 		sound.play();
 		startRollback();
 	}

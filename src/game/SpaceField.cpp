@@ -114,7 +114,7 @@ void SpaceField::summonBullet(Bullet *const &bullet, const rn::Vec2f &direction)
 	if (bullet)
 	{
 		bullet->setField(this);
-		mother.summon(bullet, rn::math::norm(bullet->getDirection()));
+		mother.summon(bullet, direction);
 	}
 }
 

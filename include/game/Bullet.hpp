@@ -20,6 +20,8 @@ class Bullet : public rn::MonoBehaviour, public Collidable, virtual public Damag
 
 protected:
 	void updateCollider();
+	void setTexture(const sf::Texture &texture);
+	const sf::Texture &getTexture() const;
 
 public:
 	Gun const *const &gun = author;

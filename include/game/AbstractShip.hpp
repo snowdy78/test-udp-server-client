@@ -1,14 +1,18 @@
 #pragma once
 
 #include "Collidable.hpp"
+#include "Helpers.hpp"
 #include "Hittable.hpp"
 #include "RigitBody2d.hpp"
 #include "SoundDisperseEntity.hpp"
+#include "SpaceFieldObject.hpp"
 #include "decl.hpp"
 #include "game/Gun.hpp"
 #include "game/colliders/EllipseCollider.hpp"
-#include "Helpers.hpp"
-#include "SpaceFieldObject.hpp"
+
+
+template<class T>
+concept GunConcept = std::is_base_of<Gun, T>::value && !std::is_same_v<Gun, T>;
 
 class AbstractShip : public RigitBody2d, public Collidable, public Hittable, public SpaceFieldObject
 {
@@ -21,7 +25,7 @@ protected:
 	void updateGunPosition();
 	void updateCollider();
 	EllipseCollider collider;
-	bool is_dead	  = false;
+	bool is_dead	 = false;
 	bool accelerated = getVelocity() + 0.3f;
 
 	inline static sf::SoundBuffer hit_buffer = loadSound("hit.ogg");
@@ -48,6 +52,8 @@ public:
 	const sf::Sprite &getSprite() const;
 	const Collider *getCollider() const override;
 	virtual void beforeDie() {}
+	template<GunConcept T>
+	void setGun();
 	void onRotation() override;
 	void onMove() override;
 	void onHit() override;
@@ -56,3 +62,9 @@ public:
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 	virtual AbstractShip *copy() const = 0;
 };
+
+template<GunConcept T>
+void AbstractShip::setGun()
+{
+	gun.reset(new T(this));
+}

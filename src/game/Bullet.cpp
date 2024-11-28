@@ -9,12 +9,13 @@
  * Construct a Bullet object with the image set to the contents of Bullet::texture
  */
 Bullet::Bullet(const Gun *gun)
-	: sprite(*texture),
-	  author(gun)
+	: author(gun)
 {
+	setTexture(*texture);
 	setOrigin(rn::Vec2f{ texture->getSize() / 2u });
 	updateCollider();
 }
+
 Bullet::~Bullet() {}
 
 void Bullet::update()
@@ -22,11 +23,6 @@ void Bullet::update()
 	velocity += acceleration;
 	acceleration *= 0.99f;
 	move(direction * velocity);
-}
-void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const
-{
-	states.transform = getTransform();
-	target.draw(sprite, states);
 }
 rn::Vec2f Bullet::getSize() const
 {
@@ -126,4 +122,18 @@ void Bullet::onCollisionEnter(Collidable *obstacle)
 	{
 		destroy();
 	}
+}
+void Bullet::setTexture(const sf::Texture &texture)
+{
+	sprite.setTexture(texture);
+}
+const sf::Texture &Bullet::getTexture() const
+{
+	return *sprite.getTexture();
+}
+
+void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+	states.transform = getTransform();
+	target.draw(sprite, states);
 }
