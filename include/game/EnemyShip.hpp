@@ -7,6 +7,7 @@
 class EnemyShip : public AbstractShip
 {
 	inline static rn::StaticTexture texture = rn::StaticTexture("img/enemy_ship.png");
+	inline static constexpr float min_distance_to_target = 100.f;
 	sf::Clock clock;
 	AbstractShip *target			   = nullptr;
 	std::unique_ptr<int> randomly_move = nullptr;

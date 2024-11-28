@@ -42,6 +42,8 @@ void EnemyShip::rotation()
 void EnemyShip::movement()
 {
 	AbstractShip::movement();
+	if (!target)
+		return;
 	if (static_cast<int>(clock.getElapsedTime().asSeconds()) % 2 == 0)
 	{
 		randomly_move = nullptr;
@@ -52,6 +54,8 @@ void EnemyShip::movement()
 		{
 			randomly_move.reset(new int(rn::random::integer(0, 1)));
 		}
+		
+		*randomly_move *= rn::math::sgn(rn::math::length(target->getPosition() - getPosition()) - min_distance_to_target);
 		move(*randomly_move * getVelocity() * getDirection());
 	}
 	if (static_cast<int>(clock.getElapsedTime().asMilliseconds()) % 1000 > 500)
