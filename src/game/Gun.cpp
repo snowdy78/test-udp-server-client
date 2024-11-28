@@ -1,20 +1,10 @@
 #include "game/Gun.hpp"
 #include "Helpers.hpp"
 #include "game/AbstractShip.hpp"
-
+#include "game/SpaceField.hpp"
 
 Gun::~Gun() {}
-void Gun::draw(sf::RenderTarget &target, sf::RenderStates states) const
-{
-	states.transform *= getTransform();
-	for (auto &iterator: bullets)
-	{
-		if (auto bullet = iterator.get())
-		{
-			target.draw(*bullet, states);
-		}
-	}
-}
+
 void Gun::setClearSoundDistance(float distance)
 {
 	sound.setClearSoundDistance(distance);
@@ -22,6 +12,11 @@ void Gun::setClearSoundDistance(float distance)
 void Gun::setDisperseRadius(float radius)
 {
 	sound.setDisperseRadius(radius);
+}
+void Gun::startRollback()
+{
+	has_rollback = true;
+	clock.start();
 }
 Gun::Gun(const AbstractShip *user, const sf::SoundBuffer *buffer)
 	: ship(user)
@@ -34,12 +29,11 @@ Gun::Gun(const AbstractShip *user, const sf::SoundBuffer *buffer)
 
 void Gun::shoot(const rn::Vec2f &direction)
 {
-	if (ship && !has_rollback)
+	if (ship && ship->field && !has_rollback)
 	{
-		summon(createBullet(), rn::math::norm(getTrajectory()));
+		ship->field->summonBullet(createBullet(), rn::math::norm(getTrajectory()));
 		sound.play();
-		has_rollback = true;
-		clock.start();
+		startRollback();
 	}
 }
 
@@ -50,7 +44,6 @@ bool Gun::hasRollback() const
 
 void Gun::update()
 {
-	BulletMother::update();
 	if (everyTime(clock, getMillisDelay()))
 	{
 		clock.reset();

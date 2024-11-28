@@ -1,8 +1,9 @@
 #pragma once
 
-#include <type_traits>
-#include "AbstractShip.hpp"
 #include "decl.hpp"
+#include "AbstractShip.hpp"
+#include "BulletMother.hpp"
+#include "SpaceFieldObject.hpp" 
 
 template<class T>
 concept ShipT = std::is_base_of<AbstractShip, T>::value && !std::is_same<T, AbstractShip>::value;
@@ -10,9 +11,10 @@ concept ShipT = std::is_base_of<AbstractShip, T>::value && !std::is_same<T, Abst
 class SpaceField : public sf::Drawable, public rn::LogicalObject
 {
 	std::vector<AbstractShip *> ships{};
+	BulletMother mother{};
 
 public:
-	using iterator = std::vector<AbstractShip *>::iterator;
+	using iterator		 = std::vector<AbstractShip *>::iterator;
 	using const_iterator = std::vector<AbstractShip *>::const_iterator;
 
 	SpaceField();
@@ -37,7 +39,9 @@ public:
 	void clear();
 
 	template<ShipT T>
-	void append();
+	void appendShip();
+	void summonBullet(Bullet *const &bullet, const rn::Vec2f &direction);
+	void destroyBullet(const Bullet *const &bullet);
 
 	void remove(AbstractShip *ship);
 
@@ -48,7 +52,7 @@ public:
 
 
 template<ShipT T>
-void SpaceField::append()
+void SpaceField::appendShip()
 {
 	T *ship = new T();
 	ship->setField(this);

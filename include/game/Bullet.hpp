@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Collidable.hpp"
-#include "DamageDealer.hpp"
 #include "decl.hpp"
-#include "game/colliders/EllipseCollider.hpp"
+#include "DamageDealer.hpp"
+#include "Collidable.hpp"
+#include "colliders/EllipseCollider.hpp"
+#include "SpaceFieldObject.hpp"
 
-class Bullet : public rn::MonoBehaviour, public Collidable, virtual public DamageDealer
+class Bullet : public rn::MonoBehaviour, public Collidable, virtual public DamageDealer, public SpaceFieldObject
 {
 	inline static rn::StaticTexture texture{ "img/bullet_shoot.png" };
 	sf::Sprite sprite;
@@ -39,9 +40,13 @@ public:
 	float getVelocity() const;
 	float getAcceleration() const;
 	rn::Vec2f getSize() const;
+
 	void destroy() const;
-	bool isIntersected(const rn::Vec2f &point) const override;
+
+	virtual void beforeDestroy() const {}
 	void onCollisionEnter(Collidable *obstacle) override;
+
+	bool isIntersected(const rn::Vec2f &point) const override;
 	const Collider *getCollider() const override;
 	/**
 	 * \brief Resolves a collision between this Bullet and the given Collidable.

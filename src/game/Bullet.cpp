@@ -1,6 +1,8 @@
 #include "game/Bullet.hpp"
 #include "game/AbstractShip.hpp"
 #include "game/Gun.hpp"
+#include "game/SpaceField.hpp"
+
 /**
  * \brief Default constructor for Bullet
  *
@@ -112,9 +114,10 @@ const sf::Sprite &Bullet::getSprite() const
 }
 void Bullet::destroy() const
 {
-	if (author)
+	if (field)
 	{
-		const_cast<Gun *>(author)->destroy(this);
+		beforeDestroy();
+		field->destroyBullet(this);
 	}
 }
 void Bullet::onCollisionEnter(Collidable *obstacle)

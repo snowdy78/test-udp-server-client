@@ -8,19 +8,20 @@
 #include "game/Gun.hpp"
 #include "game/colliders/EllipseCollider.hpp"
 #include "Helpers.hpp"
+#include "SpaceFieldObject.hpp"
 
-class AbstractShip : public RigitBody2d, public Collidable, public Hittable
+class AbstractShip : public RigitBody2d, public Collidable, public Hittable, public SpaceFieldObject
 {
 	friend class SpaceField;
+	friend class Gun;
+
 protected:
 	std::unique_ptr<Gun> gun;
 	sf::Sprite sprite;
 	void updateGunPosition();
 	void updateCollider();
 	EllipseCollider collider;
-	SpaceField *field = nullptr;
 	bool is_dead	  = false;
-	void setField(SpaceField *field);
 	bool accelerated = getVelocity() + 0.3f;
 
 	inline static sf::SoundBuffer hit_buffer = loadSound("hit.ogg");
@@ -41,15 +42,16 @@ public:
 	void start() override;
 	void update() override;
 	void onEvent(sf::Event &event) override;
-	void onMove() override;
 	bool isDead() const;
-	void onRotation() override;
-	void onCollisionEnter(Collidable *collidable) override;
 	sf::FloatRect getLocalBounds() const;
 	sf::FloatRect getGlobalBounds() const;
 	const sf::Sprite &getSprite() const;
 	const Collider *getCollider() const override;
+	virtual void beforeDie() {}
+	void onRotation() override;
+	void onMove() override;
 	void onHit() override;
+	void onCollisionEnter(Collidable *collidable) override;
 	bool resolve(const Collidable *collidable) const override;
 	void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 	virtual AbstractShip *copy() const = 0;

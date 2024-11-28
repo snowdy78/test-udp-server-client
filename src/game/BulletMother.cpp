@@ -25,6 +25,38 @@ const Bullet *BulletMother::ChildBullet::get() const
 }
 BulletMother::BulletMother() {}
 
+BulletMother::iterator BulletMother::begin()
+{
+	return bullets.begin();
+}
+
+BulletMother::iterator BulletMother::end()
+{
+	return bullets.end();
+}
+
+BulletMother::const_iterator BulletMother::cbegin() const
+{
+	return bullets.cbegin();
+}
+
+BulletMother::const_iterator BulletMother::cend() const
+{
+	return bullets.cend();
+}
+
+BulletMother::const_iterator BulletMother::begin() const
+{
+	return bullets.begin();
+}
+
+BulletMother::const_iterator BulletMother::end() const
+{
+	return bullets.end();
+}
+
+size_t BulletMother::bulletCount() const { return bullets.size(); }
+
 void BulletMother::summon(Bullet *bullet, const rn::Vec2f &direction)
 {
 	bullet->setDirection(direction);
@@ -72,7 +104,7 @@ void BulletMother::onEvent(sf::Event &event)
 	}
 }
 
-void BulletMother::destroy(const Bullet *bullet) 
+void BulletMother::destroy(const Bullet *bullet)
 {
 	auto it = std::ranges::find_if(bullets, [&](const ChildBullet &blt) {
 		return blt.get() == bullet;

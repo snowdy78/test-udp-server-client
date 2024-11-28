@@ -14,8 +14,7 @@ AudioMenu::AudioMenu(sf::RenderWindow &window)
 
 void AudioMenu::start()
 {
-	field.append<Ship>();
-	field.append<EnemyShip>();
+	field.appendShip<Ship>();
 	player = field[0];
 	player->setPosition(500, 500);
 	summonShip();
@@ -73,7 +72,7 @@ void AudioMenu::updateObjectsState()
 void AudioMenu::summonShip()
 {
 	auto res = rn::Vec2f(rn::VideoSettings::getResolution());
-	field.append<EnemyShip>();
+	field.appendShip<EnemyShip>();
 	auto ship = dynamic_cast<EnemyShip *>(field[field.size() - 1]);
 	if (ship)
 	{

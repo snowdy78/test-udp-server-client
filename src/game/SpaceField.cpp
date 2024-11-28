@@ -35,18 +35,15 @@ AbstractShip *SpaceField::operator[](size_t index)
 {
 	return ships[index];
 }
-void SpaceField::draw(sf::RenderTarget &target, sf::RenderStates states) const
-{
-	for (auto &ship: ships)
-	{
-		target.draw(*ship, states);
-	}
-}
 void SpaceField::start()
 {
 	for (auto &ship: ships)
 	{
 		ship->start();
+	}
+	for (auto &iterator : mother)
+	{
+		iterator.start();
 	}
 }
 void SpaceField::update()
@@ -55,6 +52,10 @@ void SpaceField::update()
 	{
 		ship->update();
 	}
+	for (auto &iterator : mother)
+	{
+		iterator.update();
+	}
 }
 void SpaceField::onEvent(sf::Event &event)
 {
@@ -62,30 +63,11 @@ void SpaceField::onEvent(sf::Event &event)
 	{
 		ship->onEvent(event);
 	}
-}
-SpaceField &SpaceField::operator=(const SpaceField &other)
-{
-	if (&other != this)
+	
+	for (auto &iterator : mother)
 	{
-		for (auto &ship: ships)
-		{
-			delete ship;
-		}
-		ships = other.ships;
+		iterator.onEvent(event);
 	}
-	return *this;
-}
-SpaceField &SpaceField::operator=(SpaceField &&other) noexcept
-{
-	if (&other != this)
-	{
-		for (auto &ship: ships)
-		{
-			delete ship;
-		}
-		ships = std::move(other.ships);
-	}
-	return *this;
 }
 SpaceField::iterator SpaceField::begin()
 {
@@ -125,4 +107,58 @@ void SpaceField::clear()
 		delete ship;
 	}
 	ships.clear();
+}
+
+void SpaceField::summonBullet(Bullet *const &bullet, const rn::Vec2f &direction)
+{
+	if (bullet)
+	{
+		bullet->setField(this);
+		mother.summon(bullet, rn::math::norm(bullet->getDirection()));
+	}
+}
+
+void SpaceField::destroyBullet(const Bullet *const &bullet)
+{
+	mother.destroy(bullet);
+}
+void SpaceField::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+	for (auto &iterator : mother)
+	{
+		if (auto bullet = iterator.get())
+		{
+			target.draw(*bullet, states);
+		}
+	}
+	for (auto &ship: ships)
+	{
+		target.draw(*ship, states);
+	}
+}
+
+
+SpaceField &SpaceField::operator=(const SpaceField &other)
+{
+	if (&other != this)
+	{
+		for (auto &ship: ships)
+		{
+			delete ship;
+		}
+		ships = other.ships;
+	}
+	return *this;
+}
+SpaceField &SpaceField::operator=(SpaceField &&other) noexcept
+{
+	if (&other != this)
+	{
+		for (auto &ship: ships)
+		{
+			delete ship;
+		}
+		ships = std::move(other.ships);
+	}
+	return *this;
 }
