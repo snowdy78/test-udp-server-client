@@ -7,6 +7,7 @@
 
 class BulletMother : public sf::Transformable, public rn::LogicalObject
 {
+public:
 	class ChildBullet : public rn::LogicalObject
 	{
 		std::unique_ptr<Bullet> bullet = nullptr;
@@ -25,13 +26,24 @@ class BulletMother : public sf::Transformable, public rn::LogicalObject
 		void update() override;
 		void onEvent(sf::Event &event) override;
 	};
-
-protected:
+private:
 	std::vector<ChildBullet> bullets;
 
 public:
+	
 	BulletMother();
+	using iterator = std::vector<ChildBullet>::iterator;
+	using const_iterator = std::vector<ChildBullet>::const_iterator;
 
+	iterator begin();
+	iterator end();
+	const_iterator cbegin() const;
+	const_iterator cend() const;
+	const_iterator begin() const;
+	const_iterator end() const;
+	size_t bulletCount() const;
+
+	void destroy(const Bullet *bullet);
 	void summon(Bullet *bullet, const rn::Vec2f &direction);
 	void start() override;
 	void update() override;

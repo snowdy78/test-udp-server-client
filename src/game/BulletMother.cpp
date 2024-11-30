@@ -16,8 +16,6 @@ void BulletMother::ChildBullet::update()
 		}
 		else
 			bullet->update();
-		if (bullet->isCollisionEnter())
-			need_to_remove = true;
 	}
 }
 
@@ -27,6 +25,38 @@ const Bullet *BulletMother::ChildBullet::get() const
 }
 BulletMother::BulletMother() {}
 
+BulletMother::iterator BulletMother::begin()
+{
+	return bullets.begin();
+}
+
+BulletMother::iterator BulletMother::end()
+{
+	return bullets.end();
+}
+
+BulletMother::const_iterator BulletMother::cbegin() const
+{
+	return bullets.cbegin();
+}
+
+BulletMother::const_iterator BulletMother::cend() const
+{
+	return bullets.cend();
+}
+
+BulletMother::const_iterator BulletMother::begin() const
+{
+	return bullets.begin();
+}
+
+BulletMother::const_iterator BulletMother::end() const
+{
+	return bullets.end();
+}
+
+size_t BulletMother::bulletCount() const { return bullets.size(); }
+
 void BulletMother::summon(Bullet *bullet, const rn::Vec2f &direction)
 {
 	bullet->setDirection(direction);
@@ -34,13 +64,12 @@ void BulletMother::summon(Bullet *bullet, const rn::Vec2f &direction)
 }
 void BulletMother::update()
 {
-	using namespace std::ranges;
 	std::vector<std::vector<ChildBullet>::iterator> remove_bullet_stack{};
-	for (auto bullet = bullets.begin(); bullet != bullets.end(); bullet++)
+	for (auto child_bullet = bullets.begin(); child_bullet != bullets.end(); child_bullet++)
 	{
-		bullet->update();
-		if (bullet->need_to_remove)
-			remove_bullet_stack.push_back(bullet);
+		child_bullet->update();
+		if (child_bullet->need_to_remove)
+			remove_bullet_stack.push_back(child_bullet);
 	}
 
 	for (auto &iterator: remove_bullet_stack)
@@ -72,5 +101,16 @@ void BulletMother::onEvent(sf::Event &event)
 	for (auto &iterator: bullets)
 	{
 		iterator.onEvent(event);
+	}
+}
+
+void BulletMother::destroy(const Bullet *bullet)
+{
+	auto it = std::ranges::find_if(bullets, [&](const ChildBullet &blt) {
+		return blt.get() == bullet;
+	});
+	if (it != bullets.end())
+	{
+		bullets.erase(it);
 	}
 }

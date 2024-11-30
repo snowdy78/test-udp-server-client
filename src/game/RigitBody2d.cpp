@@ -1,10 +1,5 @@
 #include "game/RigitBody2d.hpp"
 
-rn::Vec2f RigitBody2d::countDirection() const
-{
-	return rn::math::norm(rn::Vec2f(rn::mouse_position) - getPosition());
-}
-
 RigitBody2d::RigitBody2d() {}
 
 void RigitBody2d::setPosition(const rn::Vec2f &p)
@@ -33,8 +28,8 @@ void RigitBody2d::move(const rn::Vec2f &p)
 
 void RigitBody2d::update()
 {
-	Direction dir{ countDirection() };
-	setDirection(dir.x, dir.y);
+	if (!isCapable()) 
+		return;
 	movement();
 	rotation();
 }
@@ -70,4 +65,16 @@ void RigitBody2d::setDirection(float x, float y)
 Direction RigitBody2d::getDirection() const
 {
 	return direction;
+}
+void RigitBody2d::setVelocity(float velocity)
+{
+	this->velocity = velocity;
+}
+bool RigitBody2d::isCapable() const
+{
+	return is_capable;
+}
+void RigitBody2d::setCapability(bool capability)
+{
+	is_capable = capability;
 }

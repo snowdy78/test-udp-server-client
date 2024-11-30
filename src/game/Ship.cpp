@@ -1,6 +1,6 @@
 #include "game/Ship.hpp"
+#include "RuneEngine/variables.hpp"
 #include "game/AbstractShip.hpp"
-#include "game/Bullet.hpp"
 
 Ship::Ship()
 	: AbstractShip(*texture)
@@ -9,6 +9,8 @@ Ship::Ship()
 void Ship::rotation()
 {
 	using namespace rn::math;
+	Direction dir{ rn::Vec2f(rn::mouse_position) - getPosition() };
+	setDirection(dir.x, dir.y);
 	setRotation(rot(getDirection()));
 }
 
@@ -23,26 +25,23 @@ void Ship::movement()
 	if (rn::isKeyhold(sf::Keyboard::S))
 	{
 		if (!d_move)
-		{
 			d_move = std::make_unique<Direction>(-getDirection());
-		}
-		*d_move -= getDirection();
+		else
+			*d_move -= getDirection();
 	}
 	if (rn::isKeyhold(sf::Keyboard::A))
 	{
 		if (!d_move)
-		{
 			d_move = std::make_unique<Direction>(nor(getDirection()));
-		}
-		*d_move += nor(getDirection());
+		else
+			*d_move += nor(getDirection());
 	}
 	if (rn::isKeyhold(sf::Keyboard::D))
 	{
 		if (!d_move)
-		{
 			d_move = std::make_unique<Direction>(-nor(getDirection()));
-		}
-		*d_move -= nor(getDirection());
+		else
+			*d_move -= nor(getDirection());
 	}
 	if (d_move)
 	{
@@ -58,14 +57,25 @@ void Ship::onMove()
 	AbstractShip::onMove();
 	updateCollider();
 }
+void Ship::onEvent(sf::Event &event)
+{
+	AbstractShip::onEvent(event);
+	if (rn::isKeydown(sf::Mouse::Left))
+	{
+		shoot();
+	}
+}
 void Ship::onRotation()
 {
 	sf::Listener::setDirection({ getDirection().x, getDirection().y, 0.f });
 	AbstractShip::onRotation();
 	updateCollider();
 }
-void Ship::update()
+void Ship::onHit()
 {
-	AbstractShip::update();
-	updateCollisionState();
+	AbstractShip::onHit();
+}
+AbstractShip *Ship::copy() const
+{
+	return new Ship();
 }

@@ -1,17 +1,21 @@
 #include "game/Bullet.hpp"
 #include "game/AbstractShip.hpp"
 #include "game/Gun.hpp"
+#include "game/SpaceField.hpp"
+
 /**
  * \brief Default constructor for Bullet
  *
  * Construct a Bullet object with the image set to the contents of Bullet::texture
  */
 Bullet::Bullet(const Gun *gun)
-	: sprite(*texture), author(gun)
+	: author(gun)
 {
+	setTexture(*texture);
 	setOrigin(rn::Vec2f{ texture->getSize() / 2u });
 	updateCollider();
 }
+
 Bullet::~Bullet() {}
 
 void Bullet::update()
@@ -19,12 +23,6 @@ void Bullet::update()
 	velocity += acceleration;
 	acceleration *= 0.99f;
 	move(direction * velocity);
-	updateCollisionState();
-}
-void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const
-{
-	states.transform = getTransform();
-	target.draw(sprite, states);
 }
 rn::Vec2f Bullet::getSize() const
 {
@@ -103,9 +101,39 @@ const Collider *Bullet::getCollider() const
 
 bool Bullet::resolve(const Collidable *collidable) const
 {
-	return !dynamic_cast<const Bullet *>(collidable) && (!gun || dynamic_cast<const AbstractShip *>(collidable) != gun->user);
+	return dynamic_cast<const Hittable *>(collidable)
+		   && (!gun || dynamic_cast<const AbstractShip *>(collidable) != gun->user);
 }
 const sf::Sprite &Bullet::getSprite() const
 {
 	return sprite;
+}
+void Bullet::destroy() const
+{
+	if (field)
+	{
+		beforeDestroy();
+		field->destroyBullet(this);
+	}
+}
+void Bullet::onCollisionEnter(Collidable *obstacle)
+{
+	if (auto hittable = dynamic_cast<Hittable *>(obstacle))
+	{
+		destroy();
+	}
+}
+void Bullet::setTexture(const sf::Texture &texture)
+{
+	sprite.setTexture(texture);
+}
+const sf::Texture &Bullet::getTexture() const
+{
+	return *sprite.getTexture();
+}
+
+void Bullet::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+	states.transform = getTransform();
+	target.draw(sprite, states);
 }

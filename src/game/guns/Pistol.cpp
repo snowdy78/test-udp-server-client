@@ -5,16 +5,6 @@
 Pistol::Pistol(const AbstractShip *ship)
 	: Gun(ship, &sound_buffer)
 {}
-void Pistol::shoot(const rn::Vec2f &direction)
-{
-	if (ship)
-	{
-		float angle = rn::math::rot(direction) + rn::random::real(-1.f, 1.f) * disperse_angle / 2.f;
-		rn::Vec2f dir{ std::cos(angle * rn::math::rad), std::sin(angle * rn::math::rad) };
-		summon(createBullet(), dir);
-		sound.play();
-	}
-}
 Bullet *Pistol::createBullet() const
 {
 	auto bullet = new BaseBullet(this);
@@ -24,4 +14,9 @@ Bullet *Pistol::createBullet() const
 Gun *Pistol::copy() const
 {
 	return new Pistol(user);
+}
+rn::Vec2f Pistol::getTrajectory() const
+{
+	float angle = rn::math::rot(ship->getDirection()) + rn::random::real(-1.f, 1.f) * disperse_angle / 2.f;
+	return { std::cos(angle * rn::math::rad), std::sin(angle * rn::math::rad) };
 }

@@ -1,10 +1,7 @@
 #pragma once
 
 #include "AbstractShip.hpp"
-#include "Collidable.hpp"
-#include "Collider.hpp"
 #include "decl.hpp"
-
 
 
 class Ship : public AbstractShip
@@ -22,7 +19,9 @@ public:
 
 	void rotation() override;
 	void movement() override;
-	void update() override;
 	void onMove() override;
+	void onEvent(sf::Event &event) override;
 	void onRotation() override;
+	void onHit() override;
+	AbstractShip *copy() const override;
 };

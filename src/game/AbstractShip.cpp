@@ -1,11 +1,15 @@
 #include "game/AbstractShip.hpp"
 #include "game/Gun.hpp"
 #include "game/RigitBody2d.hpp"
-
+#include "game/SpaceField.hpp"
+#include "game/guns/Pistol.hpp"
 
 AbstractShip::AbstractShip(const sf::Texture &texture)
-	: sprite(texture)
-{}
+	: sprite(texture),
+	  gun(new Pistol(this))
+{
+	hit_sound.setBuffer(hit_buffer);
+}
 rn::Vec2f AbstractShip::getSize() const
 {
 	return rn::Vec2f(sprite.getTexture()->getSize());
@@ -22,9 +26,7 @@ void AbstractShip::setGun(const Gun &gun)
 void AbstractShip::shoot()
 {
 	if (!gun)
-	{
 		return;
-	}
 	gun->shoot(getDirection());
 }
 sf::FloatRect AbstractShip::getLocalBounds() const
@@ -59,17 +61,20 @@ void AbstractShip::onEvent(sf::Event &event)
 	{
 		gun->onEvent(event);
 	}
-	if (rn::isKeydown(sf::Mouse::Left))
+
+	if (rn::isKeydown(sf::Keyboard::LShift))
 	{
-		shoot();
+		setVelocity(accelerated);
+	}
+	else if (rn::isKeyup(sf::Keyboard::LShift))
+	{
+		setVelocity(accelerated);
 	}
 }
 void AbstractShip::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
 	sf::RenderStates st = states;
 	states.transform *= getTransform();
-	if (gun)
-		target.draw(*gun, states);
 	target.draw(sprite, states);
 	target.draw(health_bar, st);
 }
@@ -77,9 +82,12 @@ void AbstractShip::onMove()
 {
 	updateGunPosition();
 	updateCollider();
-	health_bar.setPosition(getPosition() + rn::Vec2f{ 0, getSize().y });
+	health_bar.setPosition(getPosition() - getOrigin() + rn::Vec2f{ 0, getSize().y });
 }
-void AbstractShip::onRotation() {}
+void AbstractShip::onRotation()
+{
+	updateCollider();
+}
 const sf::Sprite &AbstractShip::getSprite() const
 {
 	return sprite;
@@ -95,11 +103,19 @@ const Collider *AbstractShip::getCollider() const
 }
 void AbstractShip::updateCollider()
 {
-	collider.transform(rn::math::rectangle(getGlobalBounds()));
+	rn::Circle circle{ getSize().x / 2.f };
+	circle.setPosition(getPosition());
+	circle.setOrigin(getOrigin());
+	circle.setRotation(getRotation());
+	circle.setScale(getScale());
+	collider.transform(rn::math::ellipce(circle));
 }
 bool AbstractShip::resolve(const Collidable *collidable) const
 {
-	return dynamic_cast<const Bullet *>(collidable);
+	auto bullet = dynamic_cast<const Bullet *>(collidable);
+	bool state	= bullet;
+	state		= state && bullet->gun->user != this;
+	return state;
 }
 void AbstractShip::onCollisionEnter(Collidable *collidable)
 {
@@ -107,4 +123,18 @@ void AbstractShip::onCollisionEnter(Collidable *collidable)
 	{
 		takeDamage(dd->getDamage());
 	}
+}
+void AbstractShip::onHit()
+{
+	Hittable::onHit();
+	hit_sound.play();
+	if (getHealth() <= 0 && field)
+	{
+		beforeDie();
+		field->remove(this);
+	}
+}
+bool AbstractShip::isDead() const
+{
+	return is_dead;
 }

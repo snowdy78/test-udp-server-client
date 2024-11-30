@@ -1,16 +1,18 @@
 #pragma once
 
-#include "Collidable.hpp"
-#include "DamageDealer.hpp"
 #include "decl.hpp"
+#include "DamageDealer.hpp"
+#include "Collidable.hpp"
+#include "colliders/EllipseCollider.hpp"
+#include "SpaceFieldObject.hpp"
 
-class Bullet : public rn::MonoBehaviour, public Collidable, virtual public DamageDealer
+class Bullet : public rn::MonoBehaviour, public Collidable, virtual public DamageDealer, public SpaceFieldObject
 {
 	inline static rn::StaticTexture texture{ "img/bullet_shoot.png" };
 	sf::Sprite sprite;
 
 	float mass		   = 0.100f;
-	float velocity	   = 0.03f;
+	float velocity	   = 0.3f;
 	float acceleration = (0.2f - 0.1f) / 250.f;
 	rn::Vec2f direction{};
 	EllipseCollider collider;
@@ -18,6 +20,8 @@ class Bullet : public rn::MonoBehaviour, public Collidable, virtual public Damag
 
 protected:
 	void updateCollider();
+	void setTexture(const sf::Texture &texture);
+	const sf::Texture &getTexture() const;
 
 public:
 	Gun const *const &gun = author;
@@ -38,6 +42,12 @@ public:
 	float getVelocity() const;
 	float getAcceleration() const;
 	rn::Vec2f getSize() const;
+
+	void destroy() const;
+
+	virtual void beforeDestroy() const {}
+	void onCollisionEnter(Collidable *obstacle) override;
+
 	bool isIntersected(const rn::Vec2f &point) const override;
 	const Collider *getCollider() const override;
 	/**
