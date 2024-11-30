@@ -56,6 +56,13 @@ public:
 void requireCollisionState(MyCollidable &obj1, MyCollidable &obj2, Collidable::CollisionState state)
 {
 	Collidable::updateCollisionState();
+	if (state == Collidable::None)
+	{
+		size_t collision_count_obj1 = obj1.getCollisionCount();
+		size_t collision_count_obj2 = obj2.getCollisionCount();
+		REQUIRE( collision_count_obj1 == 0 );
+		REQUIRE( collision_count_obj2 == 0 );
+	}
 	bool state1 = obj1.getCollisionState(&obj2) == state;
 	bool state2 = obj2.getCollisionState(&obj1) == state;	
 	CAPTURE(obj1.getCollisionState(&obj2));
