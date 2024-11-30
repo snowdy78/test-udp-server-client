@@ -1,5 +1,4 @@
 #include "game/Collidable.hpp"
-#include <stdexcept>
 #include "game/colliders/EllipseCollider.hpp"
 #include "game/colliders/PolygonCollider.hpp"
 
@@ -30,11 +29,7 @@ Collidable::collision_traits::collision_traits(bool is_collide)
 Collidable::CollisionState Collidable::getCollisionState(Collidable *obstacle) const
 {
 	const collision_traits *state;
-	try
-	{
-		state = &collision_states.at(obstacle);
-	}
-	catch (std::out_of_range &exception)
+	if (collision_states.find(obstacle) == collision_states.end())
 	{
 		return None;
 	}
@@ -59,12 +54,8 @@ Collidable::~Collidable()
 		collidables.erase(i);
 		for (auto &collidable: collidables)
 		{
-			try
-			{
-				collidable->collision_states.erase(this);
-			}
-			catch (std::out_of_range &err)
-			{}
+			if (auto it = collidable->collision_states.find(this); it != collidable->collision_states.end())
+				collidable->collision_states.erase(it);
 		}
 	}
 }
@@ -76,28 +67,21 @@ Collidable::Collidable()
 
 void Collidable::updateCollisionState()
 {
+	if (collidables.size() == 0)
+		return;
 	for (size_t i = 0; i < collidables.size() - 1; i++)
-	{
-		auto &collidable = collidables[i];
 		for (size_t j = i + 1; j < collidables.size(); j++)
-		{
-			auto &obstacle = collidables[j];
-			collideObjects(collidable, obstacle);
-		}
-	}
+			collideObjects(collidables[i], collidables[j]);
+
 	for (auto &collidable: collidables)
-	{
 		for (auto &state: collidable->collision_states)
-		{
 			collidable->updateState(state.first);
-		}
-	}
 }
 void Collidable::collideObjects(Collidable *collidable, Collidable *obstacle)
 {
-	auto p1 = dynamic_cast<sf::Transformable *>(obstacle)->getPosition();
-	auto p2 = dynamic_cast<sf::Transformable *>(collidable)->getPosition();
-	if (rn::math::length(p1 - p2) > min_dist_collision)
+	auto o1 = dynamic_cast<sf::Transformable *>(obstacle);
+	auto o2 = dynamic_cast<sf::Transformable *>(collidable);
+	if (!o1 || !o2 || rn::math::length(o1->getPosition() - o2->getPosition()) > min_dist_collision)
 		return;
 	auto el = dynamic_cast<const EllipseCollider *>(obstacle->getCollider());
 	auto pl = dynamic_cast<const PolygonCollider *>(obstacle->getCollider());
@@ -108,6 +92,11 @@ void Collidable::collideObjects(Collidable *collidable, Collidable *obstacle)
 		is_collide = collidable->getCollider()->collide(*el);
 	else
 		is_collide = collidable->getCollider()->collide(*pl);
+	auto &obstates	 = obstacle->collision_states;
+	auto &collstates = collidable->collision_states;
+	if (!is_collide && obstates.find(collidable) == obstates.end() && collstates.find(obstacle) == collstates.end())
+		return;
+
 	collidable->setCollisionState(obstacle, is_collide);
 	if (obstacle->resolve(collidable))
 		obstacle->setCollisionState(collidable, is_collide);
@@ -125,14 +114,10 @@ void Collidable::updateState(Collidable *obstacle)
 void Collidable::setCollisionState(Collidable *obstacle, bool value)
 {
 	collision_traits *state;
-	try
-	{
-		state = &collision_states.at(obstacle);
-	}
-	catch (std::out_of_range &exception)
+	if (collision_states.find(obstacle) == collision_states.end())
 	{
 		// append collision enter state
-		collision_states.insert({ obstacle, value });
+		collision_states.emplace(obstacle, value);
 		return;
 	}
 	// update state
