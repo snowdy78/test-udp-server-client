@@ -21,28 +21,32 @@ void Ship::movement()
 	std::unique_ptr<Direction> d_move = nullptr;
 	if (rn::isKeyhold(sf::Keyboard::W))
 	{
-		d_move = std::make_unique<Direction>(getDirection());
+		rn::Vec2f value{0.0, -1.0};
+		d_move = std::make_unique<Direction>(value);
 	}
 	if (rn::isKeyhold(sf::Keyboard::S))
 	{
+		rn::Vec2f value{0.0, 1.0};
 		if (!d_move)
-			d_move = std::make_unique<Direction>(-getDirection());
+			d_move = std::make_unique<Direction>(value);
 		else
-			*d_move -= getDirection();
+			*d_move += value;
 	}
 	if (rn::isKeyhold(sf::Keyboard::A))
 	{
+		rn::Vec2f value{-1.0, 0.0};
 		if (!d_move)
-			d_move = std::make_unique<Direction>(nor(getDirection()));
+			d_move = std::make_unique<Direction>(value);
 		else
-			*d_move += nor(getDirection());
+			*d_move += value;
 	}
 	if (rn::isKeyhold(sf::Keyboard::D))
 	{
+		rn::Vec2f value{1.0, 0.0};
 		if (!d_move)
-			d_move = std::make_unique<Direction>(-nor(getDirection()));
+			d_move = std::make_unique<Direction>(value);
 		else
-			*d_move -= nor(getDirection());
+			*d_move += value;
 	}
 	if (d_move)
 	{
