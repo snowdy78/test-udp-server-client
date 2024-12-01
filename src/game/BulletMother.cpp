@@ -1,8 +1,10 @@
 #include "game/BulletMother.hpp"
+#include "RuneEngine/Math/rectangle.hpp"
 
-BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet)
+BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet, bool ignore_view_area)
 	: mother(mother),
-	  bullet(bullet)
+	  bullet(bullet),
+	  ignore_view_area(ignore_view_area)
 {}
 
 void BulletMother::ChildBullet::update()
@@ -10,7 +12,7 @@ void BulletMother::ChildBullet::update()
 	using rn::math::length;
 	if (bullet && mother)
 	{
-		if (!sf::FloatRect({}, rn::Vec2f(rn::VideoSettings::getResolution())).contains(bullet->getPosition()))
+		if (!ignore_view_area && isOutsideViewArea())
 		{
 			need_to_remove = true;
 		}
@@ -22,6 +24,14 @@ void BulletMother::ChildBullet::update()
 const Bullet *BulletMother::ChildBullet::get() const
 {
 	return bullet.get();
+}
+sf::FloatRect BulletMother::getViewArea()
+{
+	return { {}, rn::Vec2f(rn::VideoSettings::getResolution()) };
+}
+bool BulletMother::ChildBullet::isOutsideViewArea() const
+{
+	return !BulletMother::getViewArea().contains(bullet->getPosition());
 }
 BulletMother::BulletMother() {}
 
@@ -55,16 +65,37 @@ BulletMother::const_iterator BulletMother::end() const
 	return bullets.end();
 }
 
-size_t BulletMother::bulletCount() const { return bullets.size(); }
+size_t BulletMother::bulletCount() const
+{
+	return bullets.size();
+}
 
 void BulletMother::summon(Bullet *bullet, const rn::Vec2f &direction)
 {
+	if (!bullet)
+		return;
+
+	bool ignore_view_area = false;
+	rn::math::rectangle view_area(getViewArea());
 	bullet->setDirection(direction);
-	bullets.emplace_back(this, bullet);
+
+	if (!view_area.contains(bullet->getPosition())) // if view area contains the bullet
+	{
+		rn::math::ray ray{ bullet->getPosition(), bullet->getDirection() }; // try to march the ray into the view area
+		auto intersection_state = view_area.intersect(ray);
+		if (!intersection_state) // if not intersect with the view area
+		{
+			delete bullet; // delete the bullet - it never be shown anyway
+			return;
+		}
+
+		ignore_view_area = true;
+	}
+	bullets.emplace_back(this, bullet, ignore_view_area);
 }
 void BulletMother::update()
 {
-	std::vector<iterator> remove_bullet_stack{};
+	std::vector<const_iterator> remove_bullet_stack{};
 	for (auto child_bullet = bullets.begin(); child_bullet != bullets.end(); child_bullet++)
 	{
 		child_bullet->update();
