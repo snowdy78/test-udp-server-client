@@ -10,7 +10,7 @@ void BulletMother::ChildBullet::update()
 	using rn::math::length;
 	if (bullet && mother)
 	{
-		if (length(mother->getPosition() - bullet->getPosition()) > length(rn::Vec2f(rn::VideoSettings::getResolution())))
+		if (!sf::FloatRect({}, rn::Vec2f(rn::VideoSettings::getResolution())).contains(bullet->getPosition()))
 		{
 			need_to_remove = true;
 		}
@@ -64,7 +64,7 @@ void BulletMother::summon(Bullet *bullet, const rn::Vec2f &direction)
 }
 void BulletMother::update()
 {
-	std::vector<std::vector<ChildBullet>::iterator> remove_bullet_stack{};
+	std::vector<iterator> remove_bullet_stack{};
 	for (auto child_bullet = bullets.begin(); child_bullet != bullets.end(); child_bullet++)
 	{
 		child_bullet->update();

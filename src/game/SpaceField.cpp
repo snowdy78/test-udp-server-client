@@ -41,10 +41,7 @@ void SpaceField::start()
 	{
 		ship->start();
 	}
-	for (auto &iterator : mother)
-	{
-		iterator.start();
-	}
+	mother.start();
 }
 void SpaceField::update()
 {
@@ -52,10 +49,7 @@ void SpaceField::update()
 	{
 		ship->update();
 	}
-	for (auto &iterator : mother)
-	{
-		iterator.update();
-	}
+	mother.update();
 }
 void SpaceField::onEvent(sf::Event &event)
 {
@@ -63,11 +57,7 @@ void SpaceField::onEvent(sf::Event &event)
 	{
 		ship->onEvent(event);
 	}
-	
-	for (auto &iterator : mother)
-	{
-		iterator.onEvent(event);
-	}
+	mother.onEvent(event);
 }
 SpaceField::iterator SpaceField::begin()
 {
