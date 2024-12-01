@@ -76,6 +76,7 @@ void AudioMenu::summonShip()
 	auto ship = dynamic_cast<EnemyShip *>(field[field.size() - 1]);
 	if (ship)
 	{
+		ship->start();
 		ship->setTarget(player);
 		ship->setPosition(rn::random::real(0.f, 1.f) * res.x, rn::random::real(0.f, 1.f) * res.y);
 	}

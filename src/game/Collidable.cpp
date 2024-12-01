@@ -1,4 +1,6 @@
 #include "game/Collidable.hpp"
+#include <memory>
+#include "SFML/System/Thread.hpp"
 #include "game/colliders/EllipseCollider.hpp"
 #include "game/colliders/PolygonCollider.hpp"
 
@@ -35,13 +37,9 @@ Collidable::collision_traits::collision_traits(bool is_collide)
 	set(is_collide);
 }
 
-Collidable::CollisionState Collidable::getCollisionState(Collidable *obstacle) const
+Collidable::Collidable()
 {
-	auto it = collision_states.find(obstacle);
-	if (it == collision_states.end())
-		return None;
-
-	return it->second.state;
+	collidables.push_back(this);
 }
 
 Collidable::~Collidable()
@@ -58,21 +56,53 @@ Collidable::~Collidable()
 	}
 }
 
-Collidable::Collidable()
+Collidable::CollisionState Collidable::getCollisionState(Collidable *obstacle) const
 {
-	collidables.push_back(this);
+	auto it = collision_states.find(obstacle);
+	if (it == collision_states.end())
+		return None;
+
+	return it->second.state;
 }
+
+Collidable::thread_array Collidable::threads = ([]() {
+	thread_array arr;
+	for (size_t i = 1; i <= arr.max_size(); i++)
+	{
+		arr[i - 1] = std::make_shared<sf::Thread>([i]() {
+			size_t ss = collidables.size();
+			size_t cap = threads.size() + 1;
+			size_t oddy = collidables.size() % cap;
+			size_t size = static_cast<size_t>(std::floorf((ss - oddy) / static_cast<float>(cap)));
+			for (size_t m = i * size; m < (i + 1) * size; m++)
+			{
+				if (!collideChunk(m))
+					break;
+			}
+		});
+	}
+	return std::move(arr);
+})();
 
 void Collidable::updateCollisionState()
 {
 	if (collidables.size() == 0)
 		return;
-	for (size_t i = 0; i < collidables.size() - 1; i++)
+	for (auto &thread: threads)
 	{
-		for (size_t j = i + 1; j < collidables.size(); j++)
-		{
-			collideObjects(collidables[i], collidables[j]);
-		}
+		thread->launch();
+	}
+	size_t ss = collidables.size();
+	size_t cap = threads.max_size() + 1;
+	size_t size = std::floorf(ss / static_cast<float>(cap)) + ss % cap;
+	for (size_t i = 0; i < size; i++)
+	{
+		if (!collideChunk(i))
+			break;
+	}
+	for (auto &thread: threads)
+	{
+		thread->wait();
 	}
 	for (auto &collidable: collidables)
 	{
@@ -86,7 +116,7 @@ void Collidable::collideObjects(Collidable *collidable, Collidable *obstacle)
 {
 	auto o1 = dynamic_cast<sf::Transformable *>(obstacle);
 	auto o2 = dynamic_cast<sf::Transformable *>(collidable);
-	if (o1 && o2 && rn::math::length(o1->getPosition() - o2->getPosition()) > min_dist_collision)
+	if (o1 && o2 && rn::math::length(o1->getPosition() - o2->getPosition()) > min_collision_distance)
 		return;
 
 	auto el = dynamic_cast<const EllipseCollider *>(obstacle->getCollider());
@@ -135,6 +165,16 @@ void Collidable::setCollisionState(Collidable *obstacle, bool value)
 	{
 		collision_states.erase(obstacle);
 	}
+}
+bool Collidable::collideChunk(size_t start)
+{
+	if (start == collidables.size() - 1)
+		return false;
+	for (size_t i = start + 1; i < collidables.size(); i++)
+	{
+		collideObjects(collidables[start], collidables[i]);
+	}
+	return true;
 }
 Collidable *Collidable::getObstacle(size_t index)
 {

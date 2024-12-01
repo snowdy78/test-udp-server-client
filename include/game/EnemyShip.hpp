@@ -24,4 +24,5 @@ public:
 	void onMove() override;
 	void onHit() override;
 	AbstractShip *copy() const override;
+	
 };

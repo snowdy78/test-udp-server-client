@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "Collider.hpp"
 #include "decl.hpp"
 
@@ -29,10 +30,14 @@ public:
 	};
 
 private:
+	using thread_array = std::array<std::shared_ptr<sf::Thread>, 6>;
 	inline static std::vector<Collidable *> collidables{};
-	inline static constexpr float min_dist_collision = 100.f;
+	inline static constexpr float min_collision_distance = 25.f;
+	static thread_array threads;
+
 	std::map<Collidable *, collision_traits> collision_states{};
 	void setCollisionState(Collidable *obstacle, bool value);
+	static bool collideChunk(size_t start);
 	static void collideObjects(Collidable *collidable, Collidable *obstacle);
 	void updateState(Collidable *obstacle);
 

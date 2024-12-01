@@ -4,7 +4,8 @@
 
 Ship::Ship()
 	: AbstractShip(*texture)
-{}
+{
+}
 
 void Ship::rotation()
 {

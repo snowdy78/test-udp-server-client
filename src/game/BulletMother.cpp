@@ -7,10 +7,10 @@ BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet)
 
 void BulletMother::ChildBullet::update()
 {
+	using rn::math::length;
 	if (bullet && mother)
 	{
-		if (rn::math::length(mother->getPosition() - bullet->getPosition())
-			> static_cast<float>(2 * rn::VideoSettings::getResolution().x))
+		if (length(mother->getPosition() - bullet->getPosition()) > length(rn::Vec2f(rn::VideoSettings::getResolution())))
 		{
 			need_to_remove = true;
 		}
