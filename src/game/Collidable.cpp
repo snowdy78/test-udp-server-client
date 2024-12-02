@@ -70,14 +70,19 @@ Collidable::thread_array Collidable::threads = ([]() {
 	for (size_t i = 1; i <= arr.max_size(); i++)
 	{
 		arr[i - 1] = std::make_shared<sf::Thread>([i]() {
-			size_t ss = collidables.size();
-			size_t cap = threads.size() + 1;
+			size_t ss	= collidables.size();
+			size_t cap	= threads.size() + 1;
 			size_t oddy = collidables.size() % cap;
 			size_t size = static_cast<size_t>(std::floorf((ss - oddy) / static_cast<float>(cap)));
 			for (size_t m = i * size; m < (i + 1) * size; m++)
 			{
+				mutex.lock();
 				if (!collideChunk(m))
+				{
+					mutex.unlock();
 					break;
+				}
+				mutex.unlock();
 			}
 		});
 	}
@@ -92,8 +97,8 @@ void Collidable::updateCollisionState()
 	{
 		thread->launch();
 	}
-	size_t ss = collidables.size();
-	size_t cap = threads.max_size() + 1;
+	size_t ss	= collidables.size();
+	size_t cap	= threads.max_size() + 1;
 	size_t size = std::floorf(ss / static_cast<float>(cap)) + ss % cap;
 	for (size_t i = 0; i < size; i++)
 	{
