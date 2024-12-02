@@ -10,14 +10,18 @@ class BulletMother : public sf::Transformable, public rn::LogicalObject
 public:
 	class ChildBullet : public rn::LogicalObject
 	{
-		std::unique_ptr<Bullet> bullet = nullptr;
-		BulletMother *mother;
 		friend class BulletMother;
-		bool need_to_remove	  = false;
-		bool ignore_view_area = false;
 
 	public:
-		ChildBullet(BulletMother *mother, Bullet *bullet, bool ignore_view_area = false);
+
+		inline constexpr static float life_time_ms = 1000.f;
+
+		std::unique_ptr<Bullet> bullet = nullptr;
+		bool need_to_remove = false;
+		BulletMother *mother;
+		rn::Stopwatch clock;
+
+		ChildBullet(BulletMother *mother, Bullet *bullet);
 		const Bullet *get() const;
 		bool isOutsideViewArea() const;
 		void start() override;

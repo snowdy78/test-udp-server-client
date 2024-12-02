@@ -1,10 +1,9 @@
 #include "game/BulletMother.hpp"
-#include "RuneEngine/Math/rectangle.hpp"
 
-BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet, bool ignore_view_area)
+BulletMother::ChildBullet::ChildBullet(BulletMother *mother, Bullet *bullet)
 	: mother(mother),
-	  bullet(bullet),
-	  ignore_view_area(ignore_view_area)
+	  bullet(bullet)
+
 {}
 
 void BulletMother::ChildBullet::update()
@@ -12,12 +11,19 @@ void BulletMother::ChildBullet::update()
 	using rn::math::length;
 	if (bullet && mother)
 	{
-		if (!ignore_view_area && isOutsideViewArea())
+		if (clock.is_stopped() && isOutsideViewArea())
 		{
-			need_to_remove = true;
+			clock.start();
 		}
-		else
-			bullet->update();
+		else if (!clock.is_stopped() && clock.time<std::chrono::milliseconds>().count() > life_time_ms)
+		{
+			clock.stop();
+			if (isOutsideViewArea())
+				need_to_remove = true;
+			else
+				clock.reset();
+		}
+		bullet->update();
 	}
 }
 
@@ -75,23 +81,8 @@ void BulletMother::summon(Bullet *bullet, const rn::Vec2f &direction)
 	if (!bullet)
 		return;
 
-	bool ignore_view_area = false;
-	rn::math::rectangle view_area(getViewArea());
 	bullet->setDirection(direction);
-
-	if (!view_area.contains(bullet->getPosition())) // if view area contains the bullet
-	{
-		rn::math::ray ray{ bullet->getPosition(), bullet->getDirection() }; // try to march the ray into the view area
-		auto intersection_state = view_area.intersect(ray);
-		if (!intersection_state) // if not intersect with the view area
-		{
-			delete bullet; // delete the bullet - it never be shown anyway
-			return;
-		}
-
-		ignore_view_area = true;
-	}
-	bullets.emplace_back(this, bullet, ignore_view_area);
+	bullets.emplace_back(this, bullet);
 }
 void BulletMother::update()
 {
