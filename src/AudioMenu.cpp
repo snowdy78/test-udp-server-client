@@ -1,5 +1,6 @@
 #include "AudioMenu.hpp"
 #include "RuneEngine/SettingsFile.hpp"
+#include "decl.hpp"
 #include "game/EnemyShip.hpp"
 #include "game/Ship.hpp"
 
@@ -14,34 +15,36 @@ AudioMenu::AudioMenu(sf::RenderWindow &window)
 
 void AudioMenu::start()
 {
-	field.appendShip<Ship>();
+	camera.reset(new ShipCamera(window, background));
+	field.appendShip<Ship>(camera.get());
 	player = field[0];
-	player->setPosition(500, 500);
+	rn::Vec2f res{ rn::VideoSettings::getResolution() };
+	player->setPosition(res / 2.f);
 	summonShip();
-	shader.load("space.frag", sf::Shader::Fragment);
-	shader.setUniform("iResolution", rn::Vec2f(res));
-
+	background.start();
 	field.start();
+	fps_clock.start();
 }
 
 void AudioMenu::update()
 {
 	window.clear();
+
 	th->launch();
-	shader.setUniform("iTime", clock.getElapsedTime().asMilliseconds() / 1000.f);
-	if (player)
-	{
-		shader.setUniform("iPosition", player->getPosition());
-	}
-	shader.render();
+	background.update();
 	th->wait();
-	window.draw(shader);
+	sf::Transform bg_transform;
+	if (camera)
+		bg_transform = camera->getTransform();
+	window.draw(background, bg_transform);
 	window.draw(field);
 	window.display();
 }
 
 void AudioMenu::onEvent(sf::Event &event)
 {
+	background.onEvent(event);
+
 	if (window.hasFocus())
 	{
 		field.onEvent(event);
@@ -78,6 +81,41 @@ void AudioMenu::summonShip()
 	{
 		ship->start();
 		ship->setTarget(player);
-		ship->setPosition(rn::random::real(0.f, 1.f) * res.x, rn::random::real(0.f, 1.f) * res.y);
+		if (camera)
+		{
+			rn::Vec2f randomPosition{
+				rn::random::real(0.f, 1.f) * camera->getViewSize().x, 
+				rn::random::real(0.f, 1.f) * camera->getViewSize().x
+			};
+			ship->setPosition(camera->getPosition() + randomPosition);
+		}
 	}
+}
+
+AudioMenu::ShipCamera::ShipCamera(sf::RenderTarget &target, Background &bg)
+	: target(target), bg(bg)
+{}
+
+void AudioMenu::ShipCamera::onCameraMove()
+{
+	target.setView(getView());
+	bg.setPosition(getPosition());
+}
+
+void AudioMenu::Background::start()
+{
+	shader.setUniform("iResolution", rn::Vec2f(res));
+}
+
+void AudioMenu::Background::update()
+{
+	shader.setUniform("iPosition", -getPosition());
+	shader.setUniform("iTime", clock.getElapsedTime().asMilliseconds() / 1000.f);
+}
+
+void AudioMenu::Background::onEvent(sf::Event &event) {}
+
+void AudioMenu::Background::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+	target.draw(shader, states);
 }

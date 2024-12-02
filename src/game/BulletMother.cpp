@@ -19,9 +19,13 @@ void BulletMother::ChildBullet::update()
 		{
 			clock.stop();
 			if (isOutsideViewArea())
+			{
 				need_to_remove = true;
+			}
 			else
+			{
 				clock.reset();
+			}
 		}
 		bullet->update();
 	}
@@ -31,15 +35,23 @@ const Bullet *BulletMother::ChildBullet::get() const
 {
 	return bullet.get();
 }
-sf::FloatRect BulletMother::getViewArea()
+sf::View BulletMother::getViewArea() const
 {
-	return { {}, rn::Vec2f(rn::VideoSettings::getResolution()) };
+	if (!camera)
+		return { {}, rn::Vec2f(rn::VideoSettings::getResolution()) };
+	return camera->getView();
 }
 bool BulletMother::ChildBullet::isOutsideViewArea() const
 {
-	return !BulletMother::getViewArea().contains(bullet->getPosition());
+	if (!mother)
+		return false;
+	sf::View view = std::move(mother->getViewArea());
+	sf::FloatRect view_area(view.getCenter() - view.getSize() / 2.f, view.getSize());
+	return !view_area.contains(bullet->getPosition());
 }
-BulletMother::BulletMother() {}
+BulletMother::BulletMother(Camera2d *camera)
+	: camera(camera)
+{}
 
 BulletMother::iterator BulletMother::begin()
 {
@@ -49,6 +61,16 @@ BulletMother::iterator BulletMother::begin()
 BulletMother::iterator BulletMother::end()
 {
 	return bullets.end();
+}
+
+void BulletMother::setCamera(Camera2d *camera2d)
+{
+	camera = camera2d;
+}
+
+const Camera2d *BulletMother::getCamera() const
+{
+	return camera;
 }
 
 BulletMother::const_iterator BulletMother::cbegin() const

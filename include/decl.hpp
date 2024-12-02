@@ -10,6 +10,7 @@ class Font
 public:
 	inline static sf::Font Default = rn::sys::loadFont("C:\\Windows\\Fonts\\arial.ttf");
 };
+inline sf::Mutex mutex;
 
 
 struct ChatSocket;

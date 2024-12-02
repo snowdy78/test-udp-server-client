@@ -1,16 +1,18 @@
 #include "game/Ship.hpp"
 #include "RuneEngine/variables.hpp"
 #include "game/AbstractShip.hpp"
+#include "game/Camera2d.hpp"
 
-Ship::Ship()
-	: AbstractShip(*texture)
-{
-}
+Ship::Ship(Camera2d *camera)
+	: AbstractShip(*texture),
+	  camera(camera)
+{}
 
 void Ship::rotation()
 {
 	using namespace rn::math;
-	Direction dir{ rn::Vec2f(rn::mouse_position) - getPosition() };
+	rn::Vec2f camera_pos = camera->getPosition();
+	Direction dir{ rn::Vec2f(rn::mouse_position) - getPosition() + camera_pos };
 	setDirection(dir.x, dir.y);
 	setRotation(rot(getDirection()));
 }
@@ -18,15 +20,16 @@ void Ship::rotation()
 void Ship::movement()
 {
 	using namespace rn::math;
+	using namespace rn::math_operations;
 	std::unique_ptr<Direction> d_move = nullptr;
 	if (rn::isKeyhold(sf::Keyboard::W))
 	{
-		rn::Vec2f value{0.0, -1.0};
+		rn::Vec2f value{ 0.0, -1.0 };
 		d_move = std::make_unique<Direction>(value);
 	}
 	if (rn::isKeyhold(sf::Keyboard::S))
 	{
-		rn::Vec2f value{0.0, 1.0};
+		rn::Vec2f value{ 0.0, 1.0 };
 		if (!d_move)
 			d_move = std::make_unique<Direction>(value);
 		else
@@ -34,7 +37,7 @@ void Ship::movement()
 	}
 	if (rn::isKeyhold(sf::Keyboard::A))
 	{
-		rn::Vec2f value{-1.0, 0.0};
+		rn::Vec2f value{ -1.0, 0.0 };
 		if (!d_move)
 			d_move = std::make_unique<Direction>(value);
 		else
@@ -42,7 +45,7 @@ void Ship::movement()
 	}
 	if (rn::isKeyhold(sf::Keyboard::D))
 	{
-		rn::Vec2f value{1.0, 0.0};
+		rn::Vec2f value{ 1.0, 0.0 };
 		if (!d_move)
 			d_move = std::make_unique<Direction>(value);
 		else
@@ -50,7 +53,12 @@ void Ship::movement()
 	}
 	if (d_move)
 	{
-		move(getVelocity() * d_move->x, getVelocity() * d_move->y);
+		rn::Vec2f offset = getVelocity() * *d_move;
+		move(offset);
+		if (camera && offset != rn::Vec2f{})
+		{
+			camera->move(offset);
+		}
 	}
 }
 
@@ -82,5 +90,5 @@ void Ship::onHit()
 }
 AbstractShip *Ship::copy() const
 {
-	return new Ship();
+	return new Ship(camera);
 }

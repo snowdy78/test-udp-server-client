@@ -1,8 +1,11 @@
 #include "game/SpaceField.hpp"
 
-SpaceField::SpaceField() {}
+SpaceField::SpaceField(Camera2d *camera)
+	: camera(camera), mother(camera)
+{}
 
 SpaceField::SpaceField(const SpaceField &field)
+	: camera(field.camera)
 {
 	ships.resize(field.ships.size());
 	for (size_t i = 0; i < field.ships.size(); ++i)
@@ -16,6 +19,17 @@ SpaceField::~SpaceField()
 	{
 		delete ship;
 	}
+}
+
+void SpaceField::setCamera(Camera2d *camera2d)
+{
+	camera = camera2d;
+	mother.setCamera(camera2d);
+}
+
+const Camera2d *SpaceField::getCamera() const
+{
+	return camera;
 }
 
 void SpaceField::remove(AbstractShip *ship)
@@ -114,7 +128,7 @@ void SpaceField::destroyBullet(const Bullet *const &bullet)
 }
 void SpaceField::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	for (auto &iterator : mother)
+	for (auto &iterator: mother)
 	{
 		if (auto bullet = iterator.get())
 		{
@@ -132,6 +146,7 @@ SpaceField &SpaceField::operator=(const SpaceField &other)
 {
 	if (&other != this)
 	{
+		camera = other.camera;
 		for (auto &ship: ships)
 		{
 			delete ship;
@@ -144,6 +159,8 @@ SpaceField &SpaceField::operator=(SpaceField &&other) noexcept
 {
 	if (&other != this)
 	{
+		camera = std::move(other.camera);
+		mother = std::move(other.mother);
 		for (auto &ship: ships)
 		{
 			delete ship;

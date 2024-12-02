@@ -1,9 +1,9 @@
 #pragma once
 
-#include "decl.hpp"
 #include "AbstractShip.hpp"
 #include "BulletMother.hpp"
-#include "SpaceFieldObject.hpp" 
+#include "decl.hpp"
+
 
 template<class T>
 concept ShipT = std::is_base_of<AbstractShip, T>::value && !std::is_same<T, AbstractShip>::value;
@@ -11,17 +11,21 @@ concept ShipT = std::is_base_of<AbstractShip, T>::value && !std::is_same<T, Abst
 class SpaceField : public sf::Drawable, public rn::LogicalObject
 {
 	std::vector<AbstractShip *> ships{};
-	BulletMother mother{};
+
+	Camera2d *camera;
+	BulletMother mother{camera};
 
 public:
 	using iterator		 = std::vector<AbstractShip *>::iterator;
 	using const_iterator = std::vector<AbstractShip *>::const_iterator;
 
-	SpaceField();
+	SpaceField(Camera2d *camera = nullptr);
 	SpaceField(const SpaceField &field);
 	SpaceField(SpaceField &&) noexcept = default;
 	~SpaceField();
 
+	void setCamera(Camera2d *camera2d);
+	const Camera2d *getCamera() const;
 	void start() override;
 	void update() override;
 	void onEvent(sf::Event &event) override;
@@ -38,8 +42,8 @@ public:
 	const_iterator end() const;
 	void clear();
 
-	template<ShipT T>
-	void appendShip();
+	template<ShipT T, class... Args>
+	void appendShip(const Args &...args);
 	void summonBullet(Bullet *const &bullet, const rn::Vec2f &direction);
 	void destroyBullet(const Bullet *const &bullet);
 
@@ -51,10 +55,10 @@ public:
 };
 
 
-template<ShipT T>
-void SpaceField::appendShip()
+template<ShipT T, class... Args>
+void SpaceField::appendShip(const Args &...args)
 {
-	T *ship = new T();
+	T *ship = new T(args...);
 	ship->setField(this);
 	ships.push_back(ship);
 }
