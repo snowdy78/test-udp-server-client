@@ -28,7 +28,7 @@ public:
 };
 class RigitBody2d : public rn::MonoBehaviour
 {
-	float velocity = 0.3f;
+	float velocity = 5.f;
 	Direction direction{};
 	bool is_capable = true;
 public:
