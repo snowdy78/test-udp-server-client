@@ -24,7 +24,7 @@ vec3 stars(in vec2 st)
 
 void main()
 {
-	vec2 uv = (gl_FragCoord.xy + iPosition.xy) / min(iResolution.y, iResolution.x);
+	vec2 uv = (gl_FragCoord.xy - iPosition.xy) / min(iResolution.y, iResolution.x);
 	uv *= 1000.0;
 
 	vec3 color = stars(uv);
