@@ -21,8 +21,8 @@ GameInfo::GameInfo()
 void GameInfo::addData(sf::String name, std::function<sf::String()> get_data)
 {
 	data.emplace_back(name, get_data);
+	size_t y = (data.size() - 1) % table.getRowCount();
 	size_t x = (data.size() - 1) / table.getRowCount();
-	size_t y = (data.size() - 1) % table.getColumnCount();
 	data[data.size() - 1].setPosition(table.getCellGlobalPos(x, y));
 }
 
