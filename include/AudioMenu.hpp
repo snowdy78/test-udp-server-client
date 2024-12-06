@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameInfo.hpp"
+#include "components/GameInfo.hpp"
 #include "decl.hpp"
 #include "game/Camera2d.hpp"
 #include "game/SpaceField.hpp"

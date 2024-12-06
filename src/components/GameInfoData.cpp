@@ -1,10 +1,10 @@
-#include "GameInfoData.hpp"
+#include "components/GameInfoData.hpp"
 #include "Font.hpp"
 
 GameInfoData::GameInfoData(const sf::String &name, std::function<sf::String()> get_data)
 	: name(name), get_data(get_data)
 {
-	text.setFont(Font::Default);
+	text.setFont(*Font::Default);
 	updateData();
 }
 

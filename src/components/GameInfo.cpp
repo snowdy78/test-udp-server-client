@@ -1,4 +1,4 @@
-#include "GameInfo.hpp"
+#include "components/GameInfo.hpp"
 
 rn::Vec2f GameInfo::getSampleSize()
 {
