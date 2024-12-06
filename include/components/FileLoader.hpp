@@ -3,17 +3,16 @@
 
 class FileLoader
 {
+public:
 	template<class T>
 	class LoadingContent
 	{
-		T **texture;
-		sf::String path;
-		std::function<void(const sf::String &path, T &)> load_function;
+		T **texture													   = new T *(nullptr);
+		sf::String path												   = "";
+		std::function<void(const sf::String &path, T &)> load_function = [](const sf::String &path, T &) {};
 
 	public:
-		LoadingContent()
-			: load_function([](const sf::String &, T &) {})
-		{}
+		LoadingContent();
 		LoadingContent(const sf::String &path, std::function<void(const sf::String &, T &)> load_function);
 		LoadingContent(const LoadingContent &other) = delete;
 		LoadingContent(LoadingContent &&other) noexcept;
@@ -31,7 +30,6 @@ class FileLoader
 		LoadingContent &operator=(LoadingContent &&other) noexcept;
 	};
 
-public:
 	using LoadingTexture = LoadingContent<sf::Texture>;
 	using LoadingSound	 = LoadingContent<sf::SoundBuffer>;
 	using LoadingFont	 = LoadingContent<sf::Font>;
@@ -57,23 +55,40 @@ public:
 	const sf::Texture *const &addTextureToUpload(const char *path);
 
 private:
+	std::vector<LoadingContent<sf::SoundBuffer> *> sound_buffers;
+	std::vector<LoadingContent<sf::Font> *> fonts;
+	std::vector<LoadingContent<sf::Texture> *> textures;
+
 	template<class T>
-	const T *const &addToUpload(std::vector<LoadingContent<T>> &upload_container, const char *path);
+	const T *const &addToUpload(std::vector<LoadingContent<T> *> &upload_container, const char *path);
 
-	std::vector<LoadingContent<sf::SoundBuffer>> sound_buffers;
-	std::vector<LoadingContent<sf::Font>> fonts;
-	std::vector<LoadingContent<sf::Texture>> textures;
+	template<class T>
+	void loadContent(
+		std::vector<LoadingContent<T> *> &upload_container,
+		std::function<void(LoadingContent<T> &)> before_every_load = [](LoadingContent<T> &) {},
+		std::function<void(LoadingContent<T> &)> after_every_load	= [](LoadingContent<T> &) {}
+	);
+	void clearSoundLoadingContent();
+	void clearFontLoadingContent();
+	void clearTextureLoadingContent();
 
-	FileLoader() {}
-	~FileLoader() {}
+	template<class T>
+	void clearLoadingContent(std::vector<LoadingContent<T> *> &upload_container);
 
-	FileLoader(FileLoader const &);
-	FileLoader &operator=(FileLoader const &);
+	FileLoader();
+	~FileLoader();
+
+	FileLoader(FileLoader const &)			  = delete;
+	FileLoader &operator=(FileLoader const &) = delete;
 };
 ///////////////////////////
 //
 // template implementation
 //
+template<class T>
+inline FileLoader::LoadingContent<T>::LoadingContent()
+	: load_function([](const sf::String &, T &) {})
+{}
 template<class T>
 inline FileLoader::LoadingContent<T>::LoadingContent(
 	const sf::String &path, std::function<void(const sf::String &, T &)> load_function
@@ -81,23 +96,23 @@ inline FileLoader::LoadingContent<T>::LoadingContent(
 	: texture(new T *(nullptr)),
 	  path(path),
 	  load_function(load_function)
-{}
+{
+}
 
 template<class T>
 inline FileLoader::LoadingContent<T>::LoadingContent(LoadingContent &&other) noexcept
 	: texture(other.texture),
 	  path(other.path)
 {
-	delete *other.texture;
 	*other.texture = nullptr;
-	delete other.texture;
-	other.texture = nullptr;
+	other.texture  = nullptr;
 }
 
 template<class T>
 inline FileLoader::LoadingContent<T>::~LoadingContent()
 {
-	delete *texture;
+	if (texture)
+		delete *texture;
 	delete texture;
 }
 
@@ -145,8 +160,7 @@ inline FileLoader::LoadingContent<T> &FileLoader::LoadingContent<T>::operator=(L
 	if (&other != this)
 	{
 		delete *texture;
-		*texture = *other.texture;
-		delete *other.texture;
+		*texture	   = *other.texture;
 		*other.texture = nullptr;
 		delete other.texture;
 		other.texture = nullptr;
