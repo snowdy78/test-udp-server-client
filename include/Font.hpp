@@ -5,5 +5,5 @@
 class Font
 {
 public:
-	static sf::Font Default;
+	static const sf::Font * const &Default;
 };

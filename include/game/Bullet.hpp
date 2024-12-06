@@ -5,10 +5,11 @@
 #include "Collidable.hpp"
 #include "colliders/EllipseCollider.hpp"
 #include "SpaceFieldObject.hpp"
+#include "components/FileLoader.hpp"
 
 class Bullet : public rn::MonoBehaviour, public Collidable, virtual public DamageDealer, public SpaceFieldObject
 {
-	inline static rn::StaticTexture texture{ "img/bullet_shoot.png" };
+	inline static const sf::Texture * const &texture = FileLoader::Instance().addTextureToUpload("img/bullet_shoot.png");
 	sf::Sprite sprite;
 
 	float mass		   = 0.100f;

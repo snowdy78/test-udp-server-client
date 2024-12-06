@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Collidable.hpp"
-#include "Helpers.hpp"
 #include "Hittable.hpp"
 #include "RigitBody2d.hpp"
 #include "SoundDisperseEntity.hpp"
@@ -9,7 +8,7 @@
 #include "decl.hpp"
 #include "game/Gun.hpp"
 #include "game/colliders/EllipseCollider.hpp"
-
+#include "components/FileLoader.hpp"
 
 template<class T>
 concept GunConcept = std::is_base_of<Gun, T>::value && !std::is_same_v<Gun, T>;
@@ -28,7 +27,7 @@ protected:
 	bool is_dead	 = false;
 	bool accelerated = getVelocity() + 0.3f;
 
-	inline static sf::SoundBuffer hit_buffer = loadSound("hit.ogg");
+	inline static const sf::SoundBuffer *const &hit_buffer = FileLoader::Instance().addSoundToUpload("hit.ogg");
 	SoundDisperseEntity hit_sound{ 20.f, 100.f };
 
 public:

@@ -8,7 +8,7 @@ AbstractShip::AbstractShip(const sf::Texture &texture)
 	: sprite(texture),
 	  gun(new Pistol(this))
 {
-	hit_sound.setBuffer(hit_buffer);
+	hit_sound.setBuffer(*hit_buffer);
 }
 rn::Vec2f AbstractShip::getSize() const
 {
