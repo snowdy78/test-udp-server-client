@@ -1,8 +1,10 @@
 #include "game/SpaceField.hpp"
 
 SpaceField::SpaceField(Camera2d *camera)
-	: camera(camera), mother(camera)
-{}
+	: camera(camera),
+	  mother(camera)
+{
+}
 
 SpaceField::SpaceField(const SpaceField &field)
 	: camera(field.camera)
@@ -30,6 +32,11 @@ void SpaceField::setCamera(Camera2d *camera2d)
 const Camera2d *SpaceField::getCamera() const
 {
 	return camera;
+}
+
+const BulletMother &SpaceField::getBulletMother() const
+{
+	return mother;
 }
 
 void SpaceField::remove(AbstractShip *ship)

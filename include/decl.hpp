@@ -4,15 +4,9 @@
 #include <SFML/Audio/InputSoundFile.hpp>
 #include <SFML/System.hpp>
 
-
-class Font
-{
-public:
-	inline static sf::Font Default = rn::sys::loadFont("C:\\Windows\\Fonts\\arial.ttf");
-};
+#include "Font.hpp"
+#include "GameInfo.hpp"
 inline sf::Mutex mutex;
-
-
 struct ChatSocket;
 struct Client;
 struct Server;

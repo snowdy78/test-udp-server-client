@@ -3,6 +3,7 @@
 #include "AbstractShip.hpp"
 #include "BulletMother.hpp"
 #include "decl.hpp"
+#include "game/BulletMother.hpp"
 
 
 template<class T>
@@ -26,6 +27,7 @@ public:
 
 	void setCamera(Camera2d *camera2d);
 	const Camera2d *getCamera() const;
+	const BulletMother &getBulletMother() const;
 	void start() override;
 	void update() override;
 	void onEvent(sf::Event &event) override;

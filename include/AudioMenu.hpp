@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameInfo.hpp"
 #include "decl.hpp"
 #include "game/Camera2d.hpp"
 #include "game/SpaceField.hpp"
@@ -29,13 +30,14 @@ class AudioMenu : public rn::MenuBranch
 	class ShipCamera : public Camera2d
 	{
 		sf::RenderTarget &target;
-		Background &bg;
+		std::function<void()> update_on_move;
 
 	public:
-		ShipCamera(sf::RenderTarget &target, Background &bg);
+		ShipCamera(sf::RenderTarget &target, std::function<void()> update_on_move);
 		virtual void onCameraMove() override;
 	};
 	Background background{};
+	GameInfo info;
 	std::unique_ptr<sf::Thread> th;
 	AbstractShip *player = nullptr;
 	std::unique_ptr<ShipCamera> camera = nullptr;
