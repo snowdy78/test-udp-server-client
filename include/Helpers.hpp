@@ -10,3 +10,7 @@ sf::SoundBuffer loadSound(const sf::String &file_name);
  * @return True if delay is over and stop clock
  */
 bool everyTime(rn::Stopwatch &clock, const float t);
+
+std::ostream &operator<<(std::ostream &os, const sf::Vector2f &v);
+std::ostream &operator<<(std::ostream &os, const sf::FloatRect &v);
+std::ostream &operator<<(std::ostream &os, const sf::View &v);
