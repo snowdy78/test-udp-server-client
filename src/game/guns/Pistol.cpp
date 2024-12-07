@@ -3,7 +3,7 @@
 #include "game/bullets/BaseBullet.hpp"
 
 Pistol::Pistol(const AbstractShip *ship)
-	: Gun(ship, &sound_buffer)
+	: Gun(ship, sound_buffer)
 {}
 Bullet *Pistol::createBullet() const
 {

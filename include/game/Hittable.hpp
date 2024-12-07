@@ -1,5 +1,6 @@
 #pragma once
 
+#include "components/FileLoader.hpp"
 #include "decl.hpp"
 
 class Hittable
@@ -11,7 +12,7 @@ protected:
 	friend class HealthBar;
 	class HealthBar : public sf::Drawable, public sf::Transformable
 	{
-		inline static rn::StaticTexture texture = rn::StaticTexture("img/health_bar.png");
+		inline static const sf::Texture *const &texture = FileLoader::Instance().addTextureToUpload("img/health_bar.png");
 		rn::Rect ui;
 		rn::Vec2f bar_size = { 30, 6 };
 		rn::Rect fill_bar;

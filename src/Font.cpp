@@ -1,3 +1,4 @@
 #include "Font.hpp"
+#include "components/FileLoader.hpp"
 
-sf::Font Font::Default = rn::sys::loadFont("C:\\Windows\\Fonts\\arial.ttf");
+const sf::Font *const &Font::Default = FileLoader::Instance().addFontToUpload("C:/Windows/Fonts/arial.ttf");

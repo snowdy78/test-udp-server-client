@@ -4,7 +4,7 @@ Hittable::HealthBar::HealthBar(const Hittable &hittable)
 	: ui({ 32, 8 }),
 	  hittable(hittable)
 {
-	ui.setTexture(&*texture);
+	ui.setTexture(texture);
 	updateHealthBar();
 	fill_bar.setPosition(1, 1);
 	fill_bar.setFillColor(sf::Color::Green);

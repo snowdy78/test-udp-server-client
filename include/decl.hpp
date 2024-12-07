@@ -5,7 +5,7 @@
 #include <SFML/System.hpp>
 
 #include "Font.hpp"
-#include "GameInfo.hpp"
+#include "components/GameInfo.hpp"
 inline sf::Mutex mutex;
 struct ChatSocket;
 struct Client;

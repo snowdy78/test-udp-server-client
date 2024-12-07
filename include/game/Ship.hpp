@@ -2,12 +2,13 @@
 
 #include "AbstractShip.hpp"
 #include "Camera2d.hpp"
+#include "components/FileLoader.hpp"
 #include "decl.hpp"
 
 
 class Ship : public AbstractShip
 {
-	inline static rn::StaticTexture texture = rn::StaticTexture("img/ship.png");
+	inline static const sf::Texture *const &texture = FileLoader::Instance().addTextureToUpload("img/ship.png");
 	Camera2d *camera = nullptr;
 
 public:

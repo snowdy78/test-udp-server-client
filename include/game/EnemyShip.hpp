@@ -1,12 +1,13 @@
 #pragma once
 
 #include "AbstractShip.hpp"
+#include "components/FileLoader.hpp"
 #include "decl.hpp"
 
 
 class EnemyShip : public AbstractShip
 {
-	inline static rn::StaticTexture texture = rn::StaticTexture("img/enemy_ship.png");
+	inline static const sf::Texture *const &texture = FileLoader::Instance().addTextureToUpload("img/enemy_ship.png");
 	inline static constexpr float min_distance_to_target = 100.f;
 	sf::Clock clock;
 	AbstractShip *target			   = nullptr;
