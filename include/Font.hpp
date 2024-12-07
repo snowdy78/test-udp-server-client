@@ -6,4 +6,5 @@ class Font
 {
 public:
 	static const sf::Font * const &Default;
+	static const sf::Font * const &Jersey10;
 };
