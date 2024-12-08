@@ -7,7 +7,7 @@
 
 class EnemyShip : public AbstractShip
 {
-	inline static const sf::Texture *const &texture = FileLoader::Instance().addTextureToUpload("img/enemy_ship.png");
+	inline static loading<sf::Texture> texture = FileLoader::Instance().addTextureToUpload("img/enemy_ship.png").get();
 	inline static constexpr float min_distance_to_target = 100.f;
 	sf::Clock clock;
 	AbstractShip *target			   = nullptr;

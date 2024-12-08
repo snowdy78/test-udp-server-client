@@ -8,7 +8,7 @@
 
 class Ship : public AbstractShip
 {
-	inline static const sf::Texture *const &texture = FileLoader::Instance().addTextureToUpload("img/ship.png");
+	inline static loading<sf::Texture >texture = FileLoader::Instance().addTextureToUpload("img/ship.png").get();
 	Camera2d *camera = nullptr;
 
 public:

@@ -9,7 +9,7 @@
 
 class Bullet : public rn::MonoBehaviour, public Collidable, virtual public DamageDealer, public SpaceFieldObject
 {
-	inline static const sf::Texture * const &texture = FileLoader::Instance().addTextureToUpload("img/bullet_shoot.png");
+	inline static loading<sf::Texture> texture = FileLoader::Instance().addTextureToUpload("img/bullet_shoot.png").get();
 	sf::Sprite sprite;
 
 	float mass		   = 0.100f;

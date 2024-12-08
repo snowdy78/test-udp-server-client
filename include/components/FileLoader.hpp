@@ -1,19 +1,26 @@
 #pragma once
 #include <RuneEngine/Engine.hpp>
 
+template<class T>
+using loading = const T *const &;
+template<class T>
+using loading_ptr = const T *const *;
+
 class FileLoader
 {
 public:
 	template<class T>
 	class LoadingContent
 	{
-		T **texture													   = new T *(nullptr);
-		sf::String path												   = "";
-		std::function<void(const sf::String &path, T &)> load_function = [](const sf::String &path, T &) {};
+		using load_func_t = std::function<void(const sf::String &path, T &)>;
+
+		T **texture				  = new T *(nullptr);
+		sf::String path			  = "";
+		load_func_t load_function = [](const sf::String &path, T &) {};
 
 	public:
 		LoadingContent();
-		LoadingContent(const sf::String &path, std::function<void(const sf::String &, T &)> load_function);
+		LoadingContent(const sf::String &path, load_func_t load_function);
 		LoadingContent(const LoadingContent &other) = delete;
 		LoadingContent(LoadingContent &&other) noexcept;
 		~LoadingContent();
@@ -21,10 +28,11 @@ public:
 
 		const sf::String &getLoadPath() const;
 		bool isLoaded() const;
-		const T *const &get() const;
+		loading<T> get() const;
+		loading_ptr<T> ptr() const;
 
 		void setLoadPath(const sf::String &path);
-		void setLoadFunction(std::function<void(const sf::String &, T &)> load_function);
+		void setLoadFunction(load_func_t load_function);
 
 		LoadingContent &operator=(const LoadingContent &other) = delete;
 		LoadingContent &operator=(LoadingContent &&other) noexcept;
@@ -50,9 +58,9 @@ public:
 	size_t getTextureCount() const;
 	size_t getSoundCount() const;
 	size_t getFontCount() const;
-	const sf::SoundBuffer *const &addSoundToUpload(const char *path);
-	const sf::Font *const &addFontToUpload(const char *path);
-	const sf::Texture *const &addTextureToUpload(const char *path);
+	const LoadingSound &addSoundToUpload(const char *path);
+	const LoadingFont &addFontToUpload(const char *path);
+	const LoadingTexture &addTextureToUpload(const char *path);
 
 private:
 	std::vector<LoadingContent<sf::SoundBuffer> *> sound_buffers;
@@ -60,13 +68,13 @@ private:
 	std::vector<LoadingContent<sf::Texture> *> textures;
 
 	template<class T>
-	const T *const &addToUpload(std::vector<LoadingContent<T> *> &upload_container, const char *path);
+	const LoadingContent<T> &addToUpload(std::vector<LoadingContent<T> *> &upload_container, const char *path);
 
 	template<class T>
 	void loadContent(
 		std::vector<LoadingContent<T> *> &upload_container,
 		std::function<void(LoadingContent<T> &)> before_every_load = [](LoadingContent<T> &) {},
-		std::function<void(LoadingContent<T> &)> after_every_load	= [](LoadingContent<T> &) {}
+		std::function<void(LoadingContent<T> &)> after_every_load  = [](LoadingContent<T> &) {}
 	);
 	void clearSoundLoadingContent();
 	void clearFontLoadingContent();
@@ -96,8 +104,7 @@ inline FileLoader::LoadingContent<T>::LoadingContent(
 	: texture(new T *(nullptr)),
 	  path(path),
 	  load_function(load_function)
-{
-}
+{}
 
 template<class T>
 inline FileLoader::LoadingContent<T>::LoadingContent(LoadingContent &&other) noexcept
@@ -146,6 +153,12 @@ template<class T>
 inline const T *const &FileLoader::LoadingContent<T>::get() const
 {
 	return *texture;
+}
+
+template<class T>
+inline const T *const *FileLoader::LoadingContent<T>::ptr() const
+{
+	return texture;
 }
 
 template<class T>

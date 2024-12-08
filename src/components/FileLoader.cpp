@@ -43,17 +43,17 @@ size_t FileLoader::getFontCount() const
 	return fonts.size();
 }
 
-const sf::SoundBuffer *const &FileLoader::addSoundToUpload(const char *path)
+const FileLoader::LoadingSound &FileLoader::addSoundToUpload(const char *path)
 {
 	return addToUpload(sound_buffers, path);
 }
 
-const sf::Font *const &FileLoader::addFontToUpload(const char *path)
+const FileLoader::LoadingFont &FileLoader::addFontToUpload(const char *path)
 {
 	return addToUpload(fonts, path);
 }
 
-const sf::Texture *const &FileLoader::addTextureToUpload(const char *path)
+const FileLoader::LoadingTexture &FileLoader::addTextureToUpload(const char *path)
 {
 	return addToUpload(textures, path);
 }
@@ -74,7 +74,7 @@ void FileLoader::clearTextureLoadingContent()
 }
 
 template<class T>
-const T *const &FileLoader::addToUpload(std::vector<LoadingContent<T> *> &upload_container, const char *path)
+const FileLoader::LoadingContent<T> &FileLoader::addToUpload(std::vector<LoadingContent<T> *> &upload_container, const char *path)
 {
 	upload_container.emplace_back(new LoadingContent<T>(path, [](const sf::String &path, T &content) {
 		if (!content.loadFromFile(path))
@@ -82,7 +82,7 @@ const T *const &FileLoader::addToUpload(std::vector<LoadingContent<T> *> &upload
 			throw new std::out_of_range("File not found: '" + path + "'");
 		}
 	}));
-	return upload_container.back()->get();
+	return *upload_container.back();
 }
 
 template<class T>

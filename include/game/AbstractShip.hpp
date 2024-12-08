@@ -27,7 +27,7 @@ protected:
 	bool is_dead	 = false;
 	bool accelerated = getVelocity() + 0.3f;
 
-	inline static const sf::SoundBuffer *const &hit_buffer = FileLoader::Instance().addSoundToUpload("hit.ogg");
+	inline static loading<sf::SoundBuffer> hit_buffer = FileLoader::Instance().addSoundToUpload("hit.ogg").get();
 	SoundDisperseEntity hit_sound{ 20.f, 100.f };
 
 public:

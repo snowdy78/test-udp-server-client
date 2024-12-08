@@ -12,7 +12,7 @@ protected:
 	friend class HealthBar;
 	class HealthBar : public sf::Drawable, public sf::Transformable
 	{
-		inline static const sf::Texture *const &texture = FileLoader::Instance().addTextureToUpload("img/health_bar.png");
+		inline static loading<sf::Texture> texture = FileLoader::Instance().addTextureToUpload("img/health_bar.png").get();
 		rn::Rect ui;
 		rn::Vec2f bar_size = { 30, 6 };
 		rn::Rect fill_bar;

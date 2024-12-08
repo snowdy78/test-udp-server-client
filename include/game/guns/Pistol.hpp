@@ -6,7 +6,7 @@
 
 class Pistol : public Gun
 {
-	inline static const sf::SoundBuffer *const &sound_buffer = FileLoader::Instance().addSoundToUpload("shoot.ogg");
+	inline static loading<sf::SoundBuffer> sound_buffer = FileLoader::Instance().addSoundToUpload("shoot.ogg").get();
 
 	float disperse_angle = 5.f;
 

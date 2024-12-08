@@ -2,5 +2,5 @@
 #include "SFML/Graphics/Font.hpp"
 #include "components/FileLoader.hpp"
 
-const sf::Font *const &Font::Default = FileLoader::Instance().addFontToUpload("C:/Windows/Fonts/arial.ttf");
-const sf::Font *const &Font::Jersey10 = FileLoader::Instance().addFontToUpload("C:/Windows/Fonts/Jersey10-Regular.ttf");
+loading<sf::Font> Font::Default = FileLoader::Instance().addFontToUpload("C:/Windows/Fonts/arial.ttf").get();
+loading<sf::Font> Font::Jersey10 = FileLoader::Instance().addFontToUpload("C:/Windows/Fonts/Jersey10-Regular.ttf").get();
